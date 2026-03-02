@@ -2,7 +2,7 @@ package com.project.reflash.backend.controller;
 
 import com.project.reflash.backend.response.ApiResponse;
 import com.project.reflash.backend.response.ResponseMessage;
-import com.project.reflash.backend.service.security.AppUserDetails;
+import com.project.reflash.backend.service.security.StudentUserDetails;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class LoginLogoutController {
     @GetMapping("/login")
-    public ResponseEntity<ApiResponse> tryLogin(HttpSession session, @AuthenticationPrincipal AppUserDetails appUser) {
+    public ResponseEntity<ApiResponse> tryLogin(HttpSession session, @AuthenticationPrincipal StudentUserDetails student) {
         System.out.println("Successfully logged in");
-        System.out.println(appUser.getUserId());
+        System.out.println(student.getId());
         return new ResponseEntity<ApiResponse>(new ApiResponse(ResponseMessage.LOGIN_SUCCESSFUL), HttpStatus.OK);
     }
 

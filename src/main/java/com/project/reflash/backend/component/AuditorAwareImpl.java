@@ -1,7 +1,7 @@
 package com.project.reflash.backend.component;
 
-import com.project.reflash.backend.entity.AppUser;
-import com.project.reflash.backend.service.security.AppUserDetails;
+import com.project.reflash.backend.entity.Student;
+import com.project.reflash.backend.service.security.StudentUserDetails;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.data.domain.AuditorAware;
@@ -13,13 +13,13 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Component("auditAwareImpl")
-public class AuditorAwareImpl implements AuditorAware<AppUser> {
+public class AuditorAwareImpl implements AuditorAware<Student> {
 
     @PersistenceContext
     private EntityManager entityManager;
 
     @Override
-    public Optional<AppUser> getCurrentAuditor() {
+    public Optional<Student> getCurrentAuditor() {
 
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
@@ -30,13 +30,13 @@ public class AuditorAwareImpl implements AuditorAware<AppUser> {
             return Optional.empty();
         }
 
-        AppUserDetails appUserDetails =
-                (AppUserDetails) authentication.getPrincipal();
+        StudentUserDetails studentUserDetails =
+                (StudentUserDetails) authentication.getPrincipal();
 
-        Integer userId = appUserDetails.getUserId();
+        Integer userId = studentUserDetails.getId();
 
         // IMPORTANT: this does NOT hit the DB
-        AppUser userRef = entityManager.getReference(AppUser.class, userId);
+        Student userRef = entityManager.getReference(Student.class, userId);
 
         return Optional.of(userRef);
     }

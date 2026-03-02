@@ -4,6 +4,7 @@ public enum ExceptionMessage {
 
     USER_DOES_NOT_EXIST("User does not exist"),
     VALIDATION_FAILED("Validation has failed"),
+    INVALID_USERNAME("Invalid Username"),
     ;
 
     final private String message;
