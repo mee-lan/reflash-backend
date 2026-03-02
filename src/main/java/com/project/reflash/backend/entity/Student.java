@@ -13,20 +13,28 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 public class Student {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
-    @Column(name = "firstname")
+    @Column(name = "firstname", nullable=false)
     String firstName;
 
-    @Column(name = "lastname")
+    @Column(name = "lastname", nullable=false)
     String lastName;
 
-    @Column(name = "password")
+    @Column(name = "password", nullable=false)
     String password;
 
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Enrollment> enrollments;
+    @Column(name = "grade", nullable = false)
+    private String grade;
+
+    @Column(name = "section", nullable = false)
+    private String section = "NONE";
+
+    @Column(name = "roll", nullable = false)
+    private String roll;
+
+    @Column(name = "academic_year", nullable = false)
+    private String academicYear;
 }

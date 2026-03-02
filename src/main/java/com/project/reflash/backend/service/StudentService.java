@@ -1,6 +1,5 @@
 package com.project.reflash.backend.service;
 
-import com.project.reflash.backend.entity.Enrollment;
 import com.project.reflash.backend.entity.Student;
 import com.project.reflash.backend.exception.ExceptionMessage;
 import com.project.reflash.backend.exception.UserDoesNotExistException;
@@ -22,16 +21,16 @@ public class StudentService {
 
     /**
      *
-     * @param username
+     * @param academicYearGradeSectionRoll
      * @return Enrollment
      * @throws UserDoesNotExistException if enrollment with year + grade + section + roll does not exist
      */
-    public Enrollment loadEnrollment(String username) {
-        if(username == null || username.isBlank()) {
+    public Student loadStudent(String academicYearGradeSectionRoll) {
+        if(academicYearGradeSectionRoll == null || academicYearGradeSectionRoll.isBlank()) {
             throw new UserDoesNotExistException(ExceptionMessage.INVALID_USERNAME);
         }
 
-        long count = username.chars().filter(c -> c == '_').count();
+        long count = academicYearGradeSectionRoll.chars().filter(c -> c == '_').count();
 
         if(count < 1) {
             throw new UserDoesNotExistException(ExceptionMessage.INVALID_USERNAME);
@@ -44,23 +43,23 @@ public class StudentService {
 
 
         if(count == 2) {
-            year = username.split("_")[0];
-            grade = username.split("_")[1];
+            year = academicYearGradeSectionRoll.split("_")[0];
+            grade = academicYearGradeSectionRoll.split("_")[1];
             section = "NONE";
-            roll = username.split("_")[2];
+            roll = academicYearGradeSectionRoll.split("_")[2];
         } else if(count == 3) {
-            year = username.split("_")[0];
-            grade = username.split("_")[1];
-            section = username.split("_")[2];
-            roll = username.split("_")[3];
+            year = academicYearGradeSectionRoll.split("_")[0];
+            grade = academicYearGradeSectionRoll.split("_")[1];
+            section = academicYearGradeSectionRoll.split("_")[2];
+            roll = academicYearGradeSectionRoll.split("_")[3];
         } else {
             throw new UserDoesNotExistException(ExceptionMessage.INVALID_USERNAME);
         }
 
-        Optional<Enrollment> user =  studentRepository.findByGradeSectionRollAndYear(year, grade, section, roll);
+        Optional<Student> student =  studentRepository.findByGradeSectionRollAndYear(year, grade, section, roll);
 
-        if(user.isPresent()) {
-            return user.get();
+        if(student.isPresent()) {
+            return student.get();
         } else {
             throw new UserDoesNotExistException(ExceptionMessage.USER_DOES_NOT_EXIST);
         }

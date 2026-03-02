@@ -2,7 +2,6 @@ package com.project.reflash.backend.service.security;
 
 import com.project.reflash.backend.auth.user_details.StudentUserDetails;
 import com.project.reflash.backend.auth.user_details.TeacherUserDetails;
-import com.project.reflash.backend.entity.Enrollment;
 import com.project.reflash.backend.entity.Student;
 import com.project.reflash.backend.entity.Teacher;
 import com.project.reflash.backend.exception.InvalidRoleException;
@@ -18,9 +17,9 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 @Slf4j
 public class DatabaseUserDetailsService implements UserDetailsService {
-    private UserDetails userDetails;
     private final StudentService studentService;
     private final TeacherService teacherService;
+    private UserDetails userDetails;
 
     public DatabaseUserDetailsService(StudentService studentService, TeacherService teacherService) {
         this.studentService = studentService;
@@ -35,11 +34,10 @@ public class DatabaseUserDetailsService implements UserDetailsService {
         log.info("Loading user {} with role {}", username, role);
 
         if (role.trim().equalsIgnoreCase("STUDENT")) {
-            Enrollment enrollment = studentService.loadEnrollment(username);
-            Student student = enrollment.getStudent();
+            Student student = studentService.loadStudent(username);
             userDetails = new StudentUserDetails(student.getId(), student.getFirstName(), student.getLastName(),
-                    enrollment.getAcademicYear(), enrollment.getGrade(), enrollment.getSection(),
-                    enrollment.getRoll(), student.getPassword());
+                    student.getAcademicYear(), student.getGrade(), student.getSection(),
+                    student.getRoll(), student.getPassword());
         } else if (role.trim().equalsIgnoreCase("TEACHER")) {
             Teacher teacher = teacherService.loadTeacher(username);
             userDetails = new TeacherUserDetails(teacher.getId(), teacher.getFirstName(), teacher.getLastName(),
