@@ -6,11 +6,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CourseStudent {
+public class CourseStudentDto {
     private Integer id;
     private String courseName;
 
-    public CourseStudent(Course course) {
+    public CourseStudentDto(Course course) {
         this.id = course.getId();
         this.courseName = course.getCourseName();
     }
