@@ -13,7 +13,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor
-public class FlashCard {
+public class Flashcard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -45,7 +45,7 @@ public class FlashCard {
     @Column(name="lapses")
     private Integer lapses;
 
-    @Column(name="left")
+    @Column(name="left_count")
     private Integer left;
 
     @Column(name="due")
@@ -55,7 +55,7 @@ public class FlashCard {
     @JoinColumn(name="deck_id", referencedColumnName="id")
     private Deck deck ;
 
-    public FlashCard(Note note) {
+    public Flashcard(Note note) {
         this.note   = note;
         this.crt    = SchedulingAlgoUtils.intTime(1);   // current epoch seconds
         this.type   = CardType.NEW;

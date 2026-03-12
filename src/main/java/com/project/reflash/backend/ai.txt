@@ -1,0 +1,114 @@
+
+
+
+//CONTEXT:
+
+1. the database structurte is in schema.sql
+
+
+
+
+//CURRENT TASK:
+
+I am working on a route that returns a particular decks based on deckId
+
+i. on the FlashcardRepository, i retrieve three cards:
+
+    1. New card based on the the created date. Furthermore, the pageable is based on a constant '20' for now.
+
+    2. Learning and relearing cards based on the the due date. The due date for these cards are in seconds(from January 1, 1970 in UTC)
+
+    3. Review cards are retrieved based on due date. The due in review cards is the 'days since the deck creation' which the service passes to the repository layer.
+
+
+    What you need to do: Service layer also passes the userId of the user and also role of the user. If the role is student. only return the cards if deck.course.students contain the id. If the role is teacher, only return the cards if deck.course.teachers contain the id.
+
+    perhaps we need to make two end points for this? getNewCardsStudents for this comparison?
+
+    decide on your own please
+
+
+------------------------------------------------------------------------------
+
+
+ii. in the FlashcardService.java
+
+use the repository layer to retreive the new cards convert them to FlashCardDto and DeckDto
+
+This layer may need to call DeckRepostiroy to get the created date and calculate the value of 'today' variable to retrieve the Review Cards? idk figure this out
+
+
+
+------------------------------------------------------------------------------------
+
+iii. Flashcard
+
+take a look at CourseStudentDto to how i implement by dtos.
+
+similarly implement the FlashcardDto and DeckDto the deckdto should contain the course name,  deck name, flashcards, and id
+
+FlaschardDto should contain the note, crt, type, queue, ivl, factor, reps, lapses, left, due, id
+
+
+------------------------------------------------------------------------------------
+
+iv. FlashcardController
+
+should get the @PrincipalAuthentication object from there get the user id, and the get the deckId from @RequestParam
+
+review the other controllers and return the DeckDto fro this controller.
+
+
+
+
+------------------------------------------------------------------------------------
+
+
+Update the changes that you make in this file. Furthermore, don't change other files except those mentioned in the Current Task section. If you need to change, highlight it here.
+
+------------------------------------------------------------------------------
+// CHANGES MADE:
+
+i. FlashcardRepository.java
+   - Removed the old three generic methods (getNewCards, getLearningRelearningCards, getReviewCards) which had
+     parameter name bugs (@Param("id") vs :id mismatch) and no access control.
+   - Added six new role-scoped query methods (two sets of three):
+       * getNewCardsForStudent / getNewCardsForTeacher
+       * getLearningRelearningCardsForStudent / getLearningRelearningCardsForTeacher
+       * getReviewCardsForStudent / getReviewCardsForTeacher
+   - Each student method JOINs course_student and checks s.id = :userId.
+   - Each teacher method JOINs course_teacher and checks t.id = :userId.
+   - Decision: Two separate endpoints (student/teacher) chosen over a single endpoint because
+     the security models differ (ROLE_STUDENT vs ROLE_TEACHER) and two focused sets of queries
+     are cleaner than dynamic branching in a single JPQL query.
+
+ii. FlashcardService.java
+   - getDeck() now accepts (Integer deckId, Integer userId, String role).
+   - Uses DeckRepository.findById(deckId) to fetch the deck and read deck.crt.
+   - Computes 'today' as the number of full days elapsed since the deck's creation epoch
+     (midnight UTC): today = (todayMidnightEpochSeconds - deck.crt) / 86400.
+   - currentTime for learning/relearning cards uses System.currentTimeMillis() / 1000
+     (epoch seconds, matching how Flashcard.crt is stored).
+   - Branches on role to call the student or teacher variants of each repository query.
+   - Combines all three card lists, maps each Flashcard -> FlashcardDto, wraps in DeckDto.
+
+iii. FlashcardDto.java
+   - Fully implemented following the CourseStudentDto pattern.
+   - Fields: id, note (Note entity), crt, type (CardType), queue (CardQueue),
+             ivl, factor, reps, lapses, left, due.
+   - Constructor: FlashcardDto(Flashcard flashcard).
+
+iv. DeckDto.java
+   - Fully implemented.
+   - Fields: id, courseName (from deck.course.getCourseName()), deckName, flashcards (List<FlashcardDto>).
+   - Constructor: DeckDto(Deck deck, List<FlashcardDto> flashcards).
+
+v. FlashcardController.java
+   - Replaced the old stub with two working endpoints:
+       GET /api/student/flashcards  — @PreAuthorize("hasRole('STUDENT')")
+                                       @RequestParam Integer deckId
+                                       calls getDeck(deckId, student.getId(), "STUDENT")
+       GET /api/teacher/flashcards  — @PreAuthorize("hasRole('TEACHER')")
+                                       @RequestParam Integer deckId
+                                       calls getDeck(deckId, teacher.getId(), "TEACHER")
+   - Both return ResponseEntity<ApiResponse> wrapping the DeckDto.

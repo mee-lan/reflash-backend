@@ -51,6 +51,7 @@ CREATE TABLE decks
     id        INT AUTO_INCREMENT PRIMARY KEY,
     name      VARCHAR(255),
     course_id BIGINT,
+    crt       BIGINT,
     FOREIGN KEY (course_id) REFERENCES courses (id)
 );
 
@@ -80,7 +81,7 @@ CREATE TABLE flashcards
     factor  INT,
     reps    INT,
     lapses  INT,
-    `left`  INT,
+    left_count  INT,
     due     BIGINT,
     deck_id INT,
     FOREIGN KEY (note_id) REFERENCES notes (id),

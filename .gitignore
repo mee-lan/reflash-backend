@@ -6,6 +6,7 @@ target/
 
 
 .env
+*.txt
 
 ### STS ###
 .apt_generated

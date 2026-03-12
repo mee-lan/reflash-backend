@@ -1,9 +1,10 @@
 package com.project.reflash.backend.entity;
 
-import com.project.reflash.backend.algorithm.SchedulingAlgoUtils;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,17 +21,31 @@ public class Deck {
     private Integer id;
 
     @Column(name="name")
-    String name;
+    private String name;
+
+    /**
+     * Creation date expressed as an epoch-second timestamp,
+     * truncated to the **start of the day** (midnight).
+     *
+     * so that "day X" calculations are always relative to the start of
+     * a full day.
+     */
+    @Column(name="crt")
+    private long crt;
 
     @ManyToOne
     @JoinColumn(name="course_id", referencedColumnName="id")
     Course course;
 
     @OneToMany(mappedBy="deck")
-    List<FlashCard> flashcards;
+    List<Flashcard> flashcards;
 
     public Deck(String name) {
         this.name  = name;
         this.flashcards = new ArrayList<>();
+
+        this.crt = LocalDate.now()
+                .atStartOfDay(ZoneId.of("UTC"))
+                .toEpochSecond();
     }
 }

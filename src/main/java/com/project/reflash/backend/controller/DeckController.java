@@ -24,7 +24,7 @@ import java.util.List;
 @RequestMapping("/api")
 public class DeckController {
 
-    DeckService deckService;
+    private DeckService deckService;
 
     DeckController(DeckService deckService) {
         this.deckService = deckService;

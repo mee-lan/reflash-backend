@@ -82,7 +82,7 @@ public class SecurityConfiguration {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("https://kushvlshresthv.github.io", GlobalConstants.FRONTEND_URL)
+                        .allowedOrigins("https://kushvlshresthv.github.io", GlobalConstants.FRONTEND_URL, "http://localhost:5173" )
                         .allowedMethods("*")
                         .allowCredentials(true);
             }

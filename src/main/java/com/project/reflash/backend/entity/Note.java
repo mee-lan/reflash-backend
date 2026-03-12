@@ -18,7 +18,7 @@ public class Note {
     private Integer id;
 
     @OneToOne(mappedBy="note")
-    private FlashCard flashCard;
+    private Flashcard flashCard;
 
     @Column(name="front")
     private String front;

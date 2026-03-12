@@ -1,7 +1,6 @@
 package com.project.reflash.backend.algorithm;
 
-/**
- * Represents the scheduling-queue a card belongs to.
+/** Represents the scheduling-queue a card belongs to.
  *
  * We store this as an integer in the database.  The queue determines
  * *when* a card is eligible to be shown, while {@link CardType} tracks

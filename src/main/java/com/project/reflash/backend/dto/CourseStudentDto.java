@@ -8,10 +8,10 @@ import lombok.Setter;
 @Setter
 public class CourseStudentDto {
     private Integer id;
-    private String courseName;
+    private String name;
 
     public CourseStudentDto(Course course) {
         this.id = course.getId();
-        this.courseName = course.getCourseName();
+        this.name = course.getCourseName();
     }
 }

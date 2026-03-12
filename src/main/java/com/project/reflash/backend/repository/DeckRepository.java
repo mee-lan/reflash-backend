@@ -1,7 +1,6 @@
 package com.project.reflash.backend.repository;
 
 
-import com.project.reflash.backend.entity.Course;
 import com.project.reflash.backend.entity.Deck;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
