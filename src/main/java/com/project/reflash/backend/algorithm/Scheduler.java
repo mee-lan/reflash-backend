@@ -789,6 +789,18 @@ public class Scheduler {
         return null;
     }
 
+    private FlashCard getLrnCardForce() {
+        //update the cut off
+        updateLrnCutoff(true);
+
+        //reset the lrnQueue
+        resetLrn();
+        if (fillLrn()) {
+            return lrnQueue.remove(lrnQueue.size() - 1);
+        }
+        return null;
+    }
+
     // ── review cards ──────────────────────────────────────────────────────
 
     /**
