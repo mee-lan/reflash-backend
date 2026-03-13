@@ -29,6 +29,9 @@ public class Teacher {
     @Column(name="password", nullable=false)
     private String password;
 
+    @Column(name="email", nullable=false)
+    private String email;
+
 
     @ManyToMany(mappedBy = "teachers", fetch = FetchType.LAZY)
     private List<Course> courses;

@@ -17,7 +17,8 @@ CREATE TABLE teachers
     firstname VARCHAR(50)  NOT NULL,
     lastname  VARCHAR(50)  NOT NULL,
     username  VARCHAR(50)  NOT NULL UNIQUE,
-    password  VARCHAR(100) NOT NULL
+    password  VARCHAR(100) NOT NULL,
+    email  VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE courses
@@ -86,5 +87,7 @@ CREATE TABLE flashcards
     lapses     INT,
     left_count INT,
     due        BIGINT,
-    FOREIGN KEY (note_id) REFERENCES notes (id)
+    student_id BIGINT,
+    FOREIGN KEY (note_id) REFERENCES notes (id),
+    FOREIGN KEY (student_id) REFERENCES students (id)
 );

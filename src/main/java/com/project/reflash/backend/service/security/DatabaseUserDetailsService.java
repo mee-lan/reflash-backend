@@ -41,7 +41,7 @@ public class DatabaseUserDetailsService implements UserDetailsService {
         } else if (role.trim().equalsIgnoreCase("TEACHER")) {
             Teacher teacher = teacherService.loadTeacher(username);
             userDetails = new TeacherUserDetails(teacher.getId(), teacher.getFirstName(), teacher.getLastName(),
-                    teacher.getUsername(), teacher.getPassword());
+                    teacher.getUsername(), teacher.getPassword(), teacher.getEmail());
         } else {
             throw new InvalidRoleException();
         }

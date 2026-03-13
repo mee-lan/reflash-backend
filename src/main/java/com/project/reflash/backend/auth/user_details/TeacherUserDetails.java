@@ -16,13 +16,15 @@ public class TeacherUserDetails implements UserDetails {
     private final String username;
     private final String role = "ROLE_TEACHER";
     private final String password;
+    private final String email;
 
-    public TeacherUserDetails(Integer id, String firstName, String lastName,String username,  String password) {
+    public TeacherUserDetails(Integer id, String firstName, String lastName,String username,  String password, String email) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.password = password;
+        this.email = email;
     }
 
     @Override

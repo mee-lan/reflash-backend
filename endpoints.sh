@@ -8,33 +8,39 @@ BASE_URL="http://localhost:8080"
 # Login endpoint
 login_student() {
   echo "Calling student login..."
-  curl -X GET "$BASE_URL/login" -u $STD:$PASS -H "role:STUDENT"
+  curl -X GET "$BASE_URL/login" -u $STD:$PASS -H "role:STUDENT" | jq .
+  echo
+}
+
+login_student_failure() {
+  echo "Calling student login..."
+  curl -X GET "$BASE_URL/login" -u $STD:"random" -H "role:STUDENT" | jq .
   echo
 }
 
 login_teacher() {
   echo "Calling teacher login..."
-  curl -X GET "$BASE_URL/login" -u $TCHR:$PASS -H "role: TEACHER"
+  curl -X GET "$BASE_URL/login" -u $TCHR:$PASS -H "role: TEACHER" | jq .
   echo
 
 }
 
 get_courses_student() {
   echo "Getting student courses..."
-  curl -X GET "$BASE_URL/api/student/courses" -u $STD:$PASS -H "role:STUDENT"
+  curl -X GET "$BASE_URL/api/student/courses" -u $STD:$PASS -H "role:STUDENT" | jq .
   echo
 }
 
 get_decks_student() {
   echo "Getting student decks..."
-  curl -X GET "$BASE_URL/api/student/decks?courseId=2" -u $STD:$PASS -H "role:STUDENT"
+  curl -X GET "$BASE_URL/api/student/decks?courseId=2" -u $STD:$PASS -H "role:STUDENT" | jq .
   echo
 }
 
 
 get_decks_teacher() {
   echo "Getting teacher decks..."
-  curl -X GET "$BASE_URL/api/teacher/decks?courseId=1" -u $TCHR:$PASS -H "role:TEACHER"
+  curl -X GET "$BASE_URL/api/teacher/decks?courseId=1" -u $TCHR:$PASS -H "role:TEACHER" | jq .
   echo
 }
 

@@ -1,5 +1,9 @@
 package com.project.reflash.backend.controller;
 
+import com.project.reflash.backend.auth.user_details.TeacherUserDetails;
+import com.project.reflash.backend.dto.StudentDto;
+import com.project.reflash.backend.dto.TeacherDto;
+import com.project.reflash.backend.entity.Student;
 import com.project.reflash.backend.response.ApiResponse;
 import com.project.reflash.backend.response.ResponseMessage;
 import com.project.reflash.backend.auth.user_details.StudentUserDetails;
@@ -20,8 +24,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class LoginLogoutController {
 //    @PreAuthorize("hasRole('STUDENT')")
     @GetMapping("/login")
-    public ResponseEntity<ApiResponse> tryLogin(HttpSession session) {
-        return new ResponseEntity<ApiResponse>(new ApiResponse(ResponseMessage.LOGIN_SUCCESSFUL), HttpStatus.OK);
+    public ResponseEntity<ApiResponse> tryLogin(HttpSession session, Authentication authentication) {
+
+        if(authentication.getPrincipal() instanceof TeacherUserDetails teacherUserDetails) {
+            TeacherDto teacher = new TeacherDto(teacherUserDetails);
+            return new ResponseEntity<ApiResponse>(new ApiResponse(ResponseMessage.LOGIN_SUCCESSFUL, teacher), HttpStatus.OK);
+        }
+
+        StudentUserDetails studentUserdetails = (StudentUserDetails) authentication.getPrincipal();
+        StudentDto student = new StudentDto(studentUserdetails);
+
+        return new ResponseEntity<ApiResponse>(new ApiResponse(ResponseMessage.LOGIN_SUCCESSFUL, student), HttpStatus.OK);
     }
 
     @GetMapping("/api/logout")
