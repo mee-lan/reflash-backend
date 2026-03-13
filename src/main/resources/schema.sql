@@ -60,7 +60,10 @@ CREATE TABLE notes
     id                 INT AUTO_INCREMENT PRIMARY KEY,
     front              TEXT,
     back               TEXT,
-    additional_context TEXT
+    additional_context TEXT,
+    deck_id            INT,
+    crt                BIGINT,
+    FOREIGN KEY (deck_id) REFERENCES decks (id)
 );
 
 CREATE TABLE note_tags
@@ -72,18 +75,16 @@ CREATE TABLE note_tags
 
 CREATE TABLE flashcards
 (
-    id      INT AUTO_INCREMENT PRIMARY KEY,
-    note_id BIGINT,
-    crt     BIGINT,
-    type    VARCHAR(20),
-    queue   VARCHAR(20),
-    ivl     INT,
-    factor  INT,
-    reps    INT,
-    lapses  INT,
-    left_count  INT,
-    due     BIGINT,
-    deck_id INT,
-    FOREIGN KEY (note_id) REFERENCES notes (id),
-    FOREIGN KEY (deck_id) REFERENCES decks (id)
+    id         INT AUTO_INCREMENT PRIMARY KEY,
+    note_id    BIGINT,
+    crt        BIGINT,
+    type       VARCHAR(20),
+    queue      VARCHAR(20),
+    ivl        INT,
+    factor     INT,
+    reps       INT,
+    lapses     INT,
+    left_count INT,
+    due        BIGINT,
+    FOREIGN KEY (note_id) REFERENCES notes (id)
 );

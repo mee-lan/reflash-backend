@@ -38,11 +38,11 @@ public class Deck {
     Course course;
 
     @OneToMany(mappedBy="deck")
-    List<Flashcard> flashcards;
+    List<Note> notes;
 
     public Deck(String name) {
         this.name  = name;
-        this.flashcards = new ArrayList<>();
+        this.notes = new ArrayList<>();
 
         this.crt = LocalDate.now()
                 .atStartOfDay(ZoneId.of("UTC"))

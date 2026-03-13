@@ -3,6 +3,7 @@ package com.project.reflash.backend.entity;
 import com.project.reflash.backend.algorithm.CardQueue;
 import com.project.reflash.backend.algorithm.CardType;
 import com.project.reflash.backend.algorithm.SchedulingAlgoUtils;
+import com.project.reflash.backend.dto.Card;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,13 +18,6 @@ public class Flashcard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    @OneToOne(orphanRemoval = true)
-    @JoinColumn(name = "note_id")
-    private Note note;
-
-    @Column(name="crt")
-    private Long crt;
 
     @Column(name="type")
     @Enumerated(EnumType.STRING)
@@ -52,12 +46,11 @@ public class Flashcard {
     private Long due;
 
     @ManyToOne
-    @JoinColumn(name="deck_id", referencedColumnName="id")
-    private Deck deck ;
+    @JoinColumn(name="note_id", referencedColumnName="id")
+    private Note note ;
 
     public Flashcard(Note note) {
         this.note   = note;
-        this.crt    = SchedulingAlgoUtils.intTime(1);   // current epoch seconds
         this.type   = CardType.NEW;
         this.queue  = CardQueue.NEW;
         //NOTE: interval is perhaps for the review card to calculate the time values using the ease factor.
@@ -66,8 +59,8 @@ public class Flashcard {
         this.reps   = 0;
         this.lapses = 0;
         this.left   = 0;
-        // For new cards, "due" is set to the created date.
+        // For new cards, "due" is set to the created date of the note.
         // This means new cards are presented in the order their notes were created.
-        this.due    =  this.crt;
+        this.due    =  note.getCrt();
     }
 }

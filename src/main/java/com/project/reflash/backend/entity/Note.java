@@ -1,5 +1,6 @@
 package com.project.reflash.backend.entity;
 
+import com.project.reflash.backend.algorithm.SchedulingAlgoUtils;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,8 +18,12 @@ public class Note {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToOne(mappedBy="note")
-    private Flashcard flashCard;
+    @OneToMany(mappedBy="note")
+    private List<Flashcard> flashCards;
+
+    @ManyToOne
+    @JoinColumn(name="deck_id", referencedColumnName="id")
+    private Deck deck ;
 
     @Column(name="front")
     private String front;
@@ -28,6 +33,9 @@ public class Note {
 
     @Column(name="additional_context")
     private String additionalContext;
+
+    @Column(name="crt")
+    private Long crt;
 
     @ElementCollection
     @CollectionTable(
@@ -39,6 +47,7 @@ public class Note {
 
     public Note() {
         this.tags = new ArrayList<>();
+        this.crt    = SchedulingAlgoUtils.intTime(1);   // current epoch seconds
     }
 
     public void addTag(String tag) {

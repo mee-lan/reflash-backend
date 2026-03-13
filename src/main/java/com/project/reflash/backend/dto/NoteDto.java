@@ -14,6 +14,7 @@ public class NoteDto {
     private String back;
     private String additionalContext;
     private List<String> tags;
+    private Long crt;
 
     public NoteDto(Note note) {
         this.id = note.getId();
@@ -21,5 +22,6 @@ public class NoteDto {
         this.back = note.getBack();
         this.additionalContext = note.getAdditionalContext();
         this.tags = note.getTags();
+        this.crt = note.getCrt();
     }
 }

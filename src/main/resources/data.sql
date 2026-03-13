@@ -47,32 +47,32 @@ VALUES (1, 'Algebra Basics',        1, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00
        (3, 'Geometry Essentials',   1, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '2026-03-10 00:00:00')),
        (4, 'Physics Fundamentals',  2, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '2026-03-11 00:00:00'));
 
--- =============================================
--- Notes
--- =============================================
-INSERT INTO notes (id, front, back, additional_context)
+-- -- =============================================
+-- -- Notes
+-- -- =============================================
+INSERT INTO notes (id, front, back, additional_context, deck_id, crt)
 VALUES
   -- Deck 1 – Algebra Basics
-  (1,  'What is the quadratic formula?',                         'x = (-b ± √(b²-4ac)) / 2a',                          'Used to solve ax²+bx+c=0'),
-  (2,  'What is the slope-intercept form?',                      'y = mx + b',                                          'm is slope, b is y-intercept'),
-  (3,  'What is the difference of squares identity?',            'a² - b² = (a+b)(a-b)',                               'Useful for fast factoring'),
-  (4,  'What is the FOIL method?',                               'First Outer Inner Last',                              'Used when multiplying two binomials'),
+  (1,  'What is the quadratic formula?',                         'x = (-b ± √(b²-4ac)) / 2a',                          'Used to solve ax²+bx+c=0',1, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW())),
+  (2,  'What is the slope-intercept form?',                      'y = mx + b',                                          'm is slope, b is y-intercept', 1, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW())),
+  (3,  'What is the difference of squares identity?',            'a² - b² = (a+b)(a-b)',                               'Useful for fast factoring', 1, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW())),
+  (4,  'What is the FOIL method?',                               'First Outer Inner Last',                              'Used when multiplying two binomials', 1, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW())),
   -- Deck 2 – Chemistry Foundations
-  (5,  'What is an exothermic reaction?',                        'A reaction that releases heat.',                      'Example: combustion'),
-  (6,  'What is the chemical formula for water?',                'H₂O',                                                'Two hydrogen, one oxygen'),
-  (7,  'What is Avogadro''s number?',                            '6.022 × 10²³',                                       'Number of particles in one mole'),
-  (8,  'What is the pH of a neutral solution?',                  '7',                                                   'At 25 °C; below 7 = acidic, above 7 = basic'),
+  (5,  'What is an exothermic reaction?',                        'A reaction that releases heat.',                      'Example: combustion', 2, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW())),
+  (6,  'What is the chemical formula for water?',                'H₂O',                                                'Two hydrogen, one oxygen', 2, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW())),
+  (7,  'What is Avogadro''s number?',                            '6.022 × 10²³',                                       'Number of particles in one mole', 2, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW())),
+  (8,  'What is the pH of a neutral solution?',                  '7',                                                   'At 25 °C; below 7 = acidic, above 7 = basic', 2 , DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW())),
   -- Deck 3 – Geometry Essentials
-  (9,  'What is the Pythagorean theorem?',                       'a² + b² = c²',                                       'Applies to right-angled triangles'),
-  (10, 'What is the area of a circle?',                          'A = πr²',                                            'r is the radius'),
-  (11, 'What is the sum of interior angles of a triangle?',      '180°',                                               'True for any triangle in Euclidean geometry'),
-  (12, 'What is a tangent to a circle?',                         'A line that touches the circle at exactly one point.', NULL),
+  (9,  'What is the Pythagorean theorem?',                       'a² + b² = c²',                                       'Applies to right-angled triangles', 3, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW())),
+  (10, 'What is the area of a circle?',                          'A = πr²',                                            'r is the radius', 3, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW())),
+  (11, 'What is the sum of interior angles of a triangle?',      '180°',                                               'True for any triangle in Euclidean geometry', 3, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW())),
+  (12, 'What is a tangent to a circle?',                         'A line that touches the circle at exactly one point.', NULL, 3, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW())),
   -- Deck 4 – Physics Fundamentals
-  (13, 'What is Newton''s second law?',                          'F = ma',                                              'Force equals mass times acceleration'),
-  (14, 'What is the speed of light in vacuum?',                  '3 × 10⁸ m/s',                                        'Approximately 299,792,458 m/s'),
-  (15, 'What is Ohm''s law?',                                    'V = IR',                                              'Voltage = Current × Resistance'),
-  (16, 'What is kinetic energy?',                                'KE = ½mv²',                                          'm = mass, v = velocity');
-
+  (13, 'What is Newton''s second law?',                          'F = ma',                                              'Force equals mass times acceleration', 4, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW())),
+  (14, 'What is the speed of light in vacuum?',                  '3 × 10⁸ m/s',                                        'Approximately 299,792,458 m/s', 4, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW())),
+  (15, 'What is Ohm''s law?',                                    'V = IR',                                              'Voltage = Current × Resistance', 4, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW())),
+  (16, 'What is kinetic energy?',                                'KE = ½mv²',                                          'm = mass, v = velocity', 4, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()));
+--
 -- =============================================
 -- Note tags
 -- =============================================
@@ -95,46 +95,46 @@ VALUES
   (15, 'electricity'), (15, 'circuits'),
   (16, 'mechanics'),   (16, 'energy');
 
--- =============================================
--- Flashcards
+-- -- =============================================
+-- -- Flashcards
+-- --
+-- -- crt  = current epoch seconds  → DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW())
+-- -- due  depends on card type:
+-- --   NEW        → same as crt
+-- --   LEARNING   → now minus N seconds  (already due)
+-- --   RELEARNING → now minus N seconds  (already due)
+-- --   REVIEW     → days elapsed since deck creation, minus 1  (1 day overdue)
+-- --                = DATEDIFF(DAY, TIMESTAMP '<deck-date> 00:00:00', CURRENT_DATE()) - 1
+-- -- =============================================
+-- INSERT INTO flashcards (id, note_id, crt, type, queue, ivl, factor, reps, lapses, left_count, due, deck_id)
+-- VALUES
+--   -- Deck 1 – Algebra Basics (course 1)
+--   (1,  1,  DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 'NEW',        'NEW',      0,    0, 0, 0, 0, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()),        1),
+--   (2,  2,  DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 'NEW',        'NEW',      0,    0, 0, 0, 0, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()),        1),
+--   -- LEARNING: due 10 minutes ago
+--   (3,  3,  DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 'LEARNING',   'LEARNING', 0, 2500, 1, 0, 1, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()) - 600 - 86400,  1),
+--   -- REVIEW: due 1 day before today relative to deck 1 creation
+--   (4,  4,  DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 'REVIEW',     'REVIEW',  10, 2500, 3, 0, 0,
+--       DATEDIFF(DAY, TIMESTAMP '2026-03-01 00:00:00', CURRENT_DATE()) - 1, 1),
 --
--- crt  = current epoch seconds  → DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW())
--- due  depends on card type:
---   NEW        → same as crt
---   LEARNING   → now minus N seconds  (already due)
---   RELEARNING → now minus N seconds  (already due)
---   REVIEW     → days elapsed since deck creation, minus 1  (1 day overdue)
---                = DATEDIFF(DAY, TIMESTAMP '<deck-date> 00:00:00', CURRENT_DATE()) - 1
--- =============================================
-INSERT INTO flashcards (id, note_id, crt, type, queue, ivl, factor, reps, lapses, left_count, due, deck_id)
-VALUES
-  -- Deck 1 – Algebra Basics (course 1)
-  (1,  1,  DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 'NEW',        'NEW',      0,    0, 0, 0, 0, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()),        1),
-  (2,  2,  DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 'NEW',        'NEW',      0,    0, 0, 0, 0, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()),        1),
-  -- LEARNING: due 10 minutes ago
-  (3,  3,  DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 'LEARNING',   'LEARNING', 0, 2500, 1, 0, 1, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()) - 600 - 86400,  1),
-  -- REVIEW: due 1 day before today relative to deck 1 creation
-  (4,  4,  DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 'REVIEW',     'REVIEW',  10, 2500, 3, 0, 0,
-      DATEDIFF(DAY, TIMESTAMP '2026-03-01 00:00:00', CURRENT_DATE()) - 1, 1),
-
-  -- Deck 2 – Chemistry Foundations (course 2)
-  (5,  5,  DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 'NEW',        'NEW',      0,    0, 0, 0, 0, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()),        2),
-  (6,  6,  DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 'NEW',        'NEW',      0,    0, 0, 0, 0, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()),        2),
-  -- LEARNING: due 5 minutes ago
-  (7,  7,  DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 'LEARNING',   'LEARNING', 0, 2500, 1, 0, 1, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW() ),  2),
-  -- REVIEW: due 1 day before today relative to deck 2 creation
-  (8,  8,  DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 'REVIEW',     'REVIEW',   6, 2500, 4, 1, 0,
-      DATEDIFF(DAY, TIMESTAMP '2026-03-05 00:00:00', CURRENT_DATE()) - 1, 2),
-
-  -- Deck 3 – Geometry Essentials (course 1)
-  (9,  9,  DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 'NEW',        'NEW',      0,    0, 0, 0, 0, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()),        3),
-  (10, 10, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 'NEW',        'NEW',      0,    0, 0, 0, 0, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()),        3),
-  (11, 11, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 'NEW',        'NEW',      0,    0, 0, 0, 0, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()),        3),
-  -- RELEARNING: due 2 minutes ago
-  (12, 12, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 'RELEARNING', 'LEARNING', 1, 1800, 5, 2, 1, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()) - 120,  3),
-
-  -- Deck 4 – Physics Fundamentals (course 2)
-  (13, 13, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 'NEW',        'NEW',      0,    0, 0, 0, 0, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()),        4),
-  (14, 14, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 'NEW',        'NEW',      0,    0, 0, 0, 0, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()),        4),
-  (15, 15, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 'NEW',        'NEW',      0,    0, 0, 0, 0, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()),        4),
-  (16, 16, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 'NEW',        'NEW',      0,    0, 0, 0, 0, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()),        4);
+--   -- Deck 2 – Chemistry Foundations (course 2)
+--   (5,  5,  DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 'NEW',        'NEW',      0,    0, 0, 0, 0, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()),        2),
+--   (6,  6,  DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 'NEW',        'NEW',      0,    0, 0, 0, 0, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()),        2),
+--   -- LEARNING: due 5 minutes ago
+--   (7,  7,  DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 'LEARNING',   'LEARNING', 0, 2500, 1, 0, 1, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW() ),  2),
+--   -- REVIEW: due 1 day before today relative to deck 2 creation
+--   (8,  8,  DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 'REVIEW',     'REVIEW',   6, 2500, 4, 1, 0,
+--       DATEDIFF(DAY, TIMESTAMP '2026-03-05 00:00:00', CURRENT_DATE()) - 1, 2),
+--
+--   -- Deck 3 – Geometry Essentials (course 1)
+--   (9,  9,  DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 'NEW',        'NEW',      0,    0, 0, 0, 0, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()),        3),
+--   (10, 10, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 'NEW',        'NEW',      0,    0, 0, 0, 0, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()),        3),
+--   (11, 11, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 'NEW',        'NEW',      0,    0, 0, 0, 0, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()),        3),
+--   -- RELEARNING: due 2 minutes ago
+--   (12, 12, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 'RELEARNING', 'LEARNING', 1, 1800, 5, 2, 1, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()) - 120,  3),
+--
+--   -- Deck 4 – Physics Fundamentals (course 2)
+--   (13, 13, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 'NEW',        'NEW',      0,    0, 0, 0, 0, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()),        4),
+--   (14, 14, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 'NEW',        'NEW',      0,    0, 0, 0, 0, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()),        4),
+--   (15, 15, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 'NEW',        'NEW',      0,    0, 0, 0, 0, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()),        4),
+--   (16, 16, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 'NEW',        'NEW',      0,    0, 0, 0, 0, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()),        4);

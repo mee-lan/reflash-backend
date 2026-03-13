@@ -12,7 +12,6 @@ import lombok.Setter;
 public class FlashcardDto {
     private Integer id;
     private NoteDto note;
-    private Long crt;
     private CardType type;
     private CardQueue queue;
     private Integer ivl;
@@ -21,11 +20,11 @@ public class FlashcardDto {
     private Integer lapses;
     private Integer left;
     private Long due;
+    private boolean dirty = false;
 
     public FlashcardDto(Flashcard flashcard) {
         this.id = flashcard.getId();
         this.note = new NoteDto(flashcard.getNote());
-        this.crt = flashcard.getCrt();
         this.type = flashcard.getType();
         this.queue = flashcard.getQueue();
         this.ivl = flashcard.getIvl();

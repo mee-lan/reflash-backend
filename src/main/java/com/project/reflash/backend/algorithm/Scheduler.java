@@ -716,7 +716,7 @@ public class Scheduler {
 
         // 5. Collapse: look ahead for learning cards within the collapse window.
         //    This avoids ending the session when a learning card is almost due.
-        c = getLrnCard();
+        c = getLrnCardWithReset();
         return c; // may be null → session over
     }
 
@@ -789,7 +789,7 @@ public class Scheduler {
         return null;
     }
 
-    private FlashCard getLrnCardForce() {
+    private FlashCard getLrnCardWithReset() {
         //update the cut off
         updateLrnCutoff(true);
 
@@ -886,11 +886,6 @@ public class Scheduler {
      * @param ease the user's answer (1–4). Not used for new cards because
      *             the card always moves to LEARNING regardless of ease.
      */
-    //NOTE: if the new card is answered, the Queue type is changed to LEARNING, but it is not moved to the learning queue.
-    //NOTE: Anki simply updates the attribute queue to move a card to different queue. When the destination queue will be reset(ex: for tomorrow's session), the card will be automatically inserted into it)
-
-    //TODO: why isn't the due date being updated based on the ease here?
-
     private void answerNewCard(FlashCard card, int ease) {
         // Move from the NEW queue → LEARNING queue.
         // Anki does: card.queue = 1; card.type = 1;
