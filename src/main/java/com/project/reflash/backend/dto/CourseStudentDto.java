@@ -9,14 +9,14 @@ import java.util.List;
 @Getter
 @Setter
 public class CourseStudentDto {
-    private Integer id;
+    private Integer courseId;
     private String courseName;
     private String courseDescription;
     private Integer deckCount;
     private List<String> teacherNames;
 
     public CourseStudentDto(Course course) {
-        this.id = course.getId();
+        this.courseId = course.getId();
         this.courseName = course.getCourseName();
         this.courseDescription = course.getDescription();
     }

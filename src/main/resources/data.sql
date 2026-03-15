@@ -41,14 +41,14 @@ VALUES (1, 1),
 -- crt = epoch seconds at midnight UTC of the deck creation date.
 -- H2 2.x: DATEDIFF with unquoted unit, TIMESTAMP literal for specific dates.
 -- =============================================
-INSERT INTO decks (id, name, course_id, crt)
-VALUES (1, 'Algebra Basics', 1, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '2026-03-01 00:00:00')),
+INSERT INTO decks (id, name, course_id, crt, description)
+VALUES (1, 'Algebra Basics', 1, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '2026-03-01 00:00:00'), 'Basic algebra cards'),
        (2, 'Chemistry Foundations', 2,
-        DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '2026-03-05 00:00:00')),
+        DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '2026-03-05 00:00:00'), 'Chemistry cards for first chapter'),
        (3, 'Geometry Essentials', 1,
-        DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '2026-03-10 00:00:00')),
+        DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '2026-03-10 00:00:00'), 'Geometry essentials for unit 5'),
        (4, 'Physics Fundamentals', 2,
-        DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '2026-03-11 00:00:00'));
+        DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', TIMESTAMP '2026-03-11 00:00:00'), 'Physics chapter 1 notes');
 
 -- -- =============================================
 -- -- Notes

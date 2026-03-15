@@ -23,6 +23,9 @@ public class Deck {
     @Column(name="name")
     private String name;
 
+    @Column(name="description")
+    private String description;
+
     /**
      * Creation date expressed as an epoch-second timestamp,
      * truncated to the **start of the day** (midnight).

@@ -7,11 +7,15 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DeckStudentDto {
-    private Integer id;
-    private String name;
+    private Integer deckId;
+    private String deckName;
+    private String deckDescription;
+    private Integer cardCount;
 
-    public DeckStudentDto(Deck deck) {
-        this.id = deck.getId();
-        this.name = deck.getName();
+    public DeckStudentDto(Deck deck, Integer cardCount) {
+        this.deckId = deck.getId();
+        this.deckName = deck.getName();
+        this.deckDescription = deck.getDescription();
+        this.cardCount = cardCount;
     }
 }

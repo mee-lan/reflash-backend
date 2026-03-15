@@ -20,7 +20,10 @@ public class DeckService {
 
     public List<DeckStudentDto> getDecksofStudent(Integer studentId, Integer courseId) {
         //TODO: check whether the course is accessible to this particular studentId, perhaps it does in the repository, but verify properly
-        return deckRepository.getDecksOfStudent(studentId, courseId).stream().map(DeckStudentDto::new).toList();
+        return deckRepository.getDecksOfStudent(studentId, courseId).stream().map(deck -> {
+            Integer cardCount = deck.getNotes() != null ? deck.getNotes().size() : 0;
+            return new DeckStudentDto(deck, cardCount);
+        }).toList();
     }
 
 

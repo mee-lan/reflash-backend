@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CourseTeacherDto {
-    private Integer id;
+    private Integer couresId;
     private String courseName;
     private String courseDescription;
     private Integer deckCount;
@@ -15,7 +15,7 @@ public class CourseTeacherDto {
     private String grade;
 
     public CourseTeacherDto(Course course) {
-        this.id = course.getId();
+        this.couresId = course.getId();
         this.courseName = course.getCourseName();
         this.grade = course.getGrade();
         this.courseDescription = course.getDescription();
