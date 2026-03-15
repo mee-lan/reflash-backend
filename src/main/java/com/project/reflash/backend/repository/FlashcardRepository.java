@@ -1,8 +1,14 @@
 package com.project.reflash.backend.repository;
 
 import com.project.reflash.backend.entity.Flashcard;
+import com.project.reflash.backend.entity.Note;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface FlashcardRepository extends JpaRepository<Flashcard, Integer> {
@@ -18,9 +24,18 @@ public interface FlashcardRepository extends JpaRepository<Flashcard, Integer> {
 //            WHERE f.type = 'NEW' AND d.id = :deckId AND s.id = :userId
 //            ORDER BY f.crt
 //            """)
-//    List<Flashcard> getNewCardsForStudent(@Param("deckId") Integer deckId,
-//                                          @Param("userId") Integer userId,
-//                                          Pageable pageable);
+    @Query("""
+        SELECT n
+        FROM Note n
+            JOIN n.deck d
+            JOIN d.course.students s
+        WHERE n.flashCards IS EMPTY
+            AND d.id = :deckId
+            AND s.id = :userId
+    """)
+    List<Note> getNewCardsForStudent(@Param("deckId") Integer deckId,
+                                     @Param("userId") Integer userId,
+                                     Pageable pageable);
 //
 //    @Query("""
 //            SELECT f

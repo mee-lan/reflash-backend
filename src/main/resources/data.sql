@@ -16,9 +16,9 @@ VALUES ('First', 'Teacher', 'username', '{noop}password', 'username@pcampus.edu.
 -- =============================================
 -- Courses
 -- =============================================
-INSERT INTO courses (id, name, grade, academic_year)
-VALUES (1, 'Mathematics', '10', '2026'),
-       (2, 'Science', '10', '2026');
+INSERT INTO courses (id, name, grade, academic_year, description)
+VALUES (1, 'Mathematics', '10', '2026', 'Mathematics course'),
+       (2, 'Science', '10', '2026', 'Science course');
 
 -- =============================================
 -- Course ↔ Teacher

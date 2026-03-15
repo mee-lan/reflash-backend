@@ -18,13 +18,14 @@ CREATE TABLE teachers
     lastname  VARCHAR(50)  NOT NULL,
     username  VARCHAR(50)  NOT NULL UNIQUE,
     password  VARCHAR(100) NOT NULL,
-    email  VARCHAR(100) NOT NULL
+    email     VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE courses
 (
     id            INT AUTO_INCREMENT PRIMARY KEY,
     name          VARCHAR(100) NOT NULL,
+    description   TEXT,
     grade         VARCHAR(10)  NOT NULL,
     academic_year VARCHAR(10)  NOT NULL
 );

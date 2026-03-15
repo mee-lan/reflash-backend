@@ -4,10 +4,12 @@ import com.project.reflash.backend.dto.DeckDto;
 import com.project.reflash.backend.dto.FlashcardDto;
 import com.project.reflash.backend.entity.Deck;
 import com.project.reflash.backend.entity.Flashcard;
+import com.project.reflash.backend.entity.Note;
 import com.project.reflash.backend.repository.DeckRepository;
 import com.project.reflash.backend.repository.FlashcardRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -28,15 +30,44 @@ public class FlashcardService {
         this.deckRepository = deckRepository;
     }
 
-//    /**
-//     * Returns the due flashcards (new + learning/relearning + review) for a given deck,
-//     * enforcing that the requesting user actually has access to the deck via their role.
-//     *
-//     * @param deckId  the deck to retrieve cards for
-//     * @param userId  the id of the authenticated user (student or teacher)
-//     * @param role    either "STUDENT" or "TEACHER"
-//     */
-//    public DeckDto getDeck(Integer deckId, Integer userId, String role) {
+
+    //to return a flashcard, following information are needed
+    /*
+
+        the user id
+
+        join two tables, notes and the flaschard
+
+        retrieve the new cards if: the deckId matches the deck_id in notes and that notes does not have any flashcard associated with it.
+
+        create the flashcards for these notes
+
+
+        then retrieve all the learning and review cards rom the flashcard repository for this particular user and this particular deck(may have to join with note to get the deck informatoin)
+
+        return all of these
+     */
+
+
+
+
+    public DeckDto getDeck(Integer deckId, Integer userId, String role) {
+        //check if the deck is accessible to the user
+        Deck deck = deckRepository.findById(deckId)
+                .orElseThrow(() -> new RuntimeException("Deck not found: " + deckId));
+
+
+
+
+        //retrieve all the new notes from the deck
+        List<Note> newNotes = flashcardRepository.getNewCardsForStudent(deckId, userId, PageRequest.of(0, 20));
+        List<Flashcard> newCards = newNotes.stream().map(Flashcard::new).toList();
+        List<FlashcardDto> allCards = newCards.stream().map(FlashcardDto::new).toList();
+
+
+        return new DeckDto(deck, allCards);
+
+    }
 //        Deck deck = deckRepository.findById(deckId)
 //                .orElseThrow(() -> new RuntimeException("Deck not found: " + deckId));
 //

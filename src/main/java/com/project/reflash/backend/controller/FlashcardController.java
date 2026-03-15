@@ -24,15 +24,15 @@ public class FlashcardController {
     public FlashcardController(FlashcardService flashcardService) {
         this.flashcardService = flashcardService;
     }
-//
-//    @PreAuthorize("hasRole('STUDENT')")
-//    @GetMapping("/student/flashcards")
-//    public ResponseEntity<ApiResponse> getDeckForStudent(
-//            @AuthenticationPrincipal StudentUserDetails student,
-//            @RequestParam Integer deckId) {
-//        DeckDto deck = flashcardService.getDeck(deckId, student.getId(), "STUDENT");
-//        return new ResponseEntity<>(new ApiResponse(deck), HttpStatus.OK);
-//    }
+
+    @PreAuthorize("hasRole('STUDENT')")
+    @GetMapping("/student/flashcards")
+    public ResponseEntity<ApiResponse> getDeckForStudent(
+            @AuthenticationPrincipal StudentUserDetails student,
+            @RequestParam Integer deckId) {
+        DeckDto deck = flashcardService.getDeck(deckId, student.getId(), "STUDENT");
+        return new ResponseEntity<>(new ApiResponse(deck), HttpStatus.OK);
+    }
 
 //    @PreAuthorize("hasRole('TEACHER')")
 //    @GetMapping("/teacher/flashcards")
