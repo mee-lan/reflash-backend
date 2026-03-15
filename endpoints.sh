@@ -31,6 +31,15 @@ get_courses_student() {
   echo
 }
 
+
+
+get_courses_teacher() {
+  echo "Getting teacher courses..."
+  curl -X GET "$BASE_URL/api/teacher/courses" -u $TCHR:$PASS -H "role:TEACHER" | jq .
+  echo
+}
+
+
 get_decks_student() {
   echo "Getting student decks..."
   curl -X GET "$BASE_URL/api/student/decks?courseId=2" -u $STD:$PASS -H "role:STUDENT" | jq .

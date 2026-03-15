@@ -1,6 +1,7 @@
 package com.project.reflash.backend.service;
 
 import com.project.reflash.backend.dto.CourseStudentDto;
+import com.project.reflash.backend.dto.CourseTeacherDto;
 import com.project.reflash.backend.repository.CourseRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -33,8 +34,14 @@ public class CourseService {
         ).toList();
     }
 
-    public List<CourseStudentDto> getCoursesOfTeacher(Integer teacherId) {
+    public List<CourseTeacherDto> getCoursesOfTeacher(Integer teacherId) {
         //TODO: implement this properly
-        return this.courseRepository.getCoursesOfTeacher(teacherId).stream().map(CourseStudentDto::new).toList();
+        return this.courseRepository.getCoursesOfTeacher(teacherId).stream().map(course -> {
+                    Integer deckCount = course.getDecks() != null ? course.getDecks().size() : 0;
+
+            Integer studentCount = course.getStudents() != null ? course.getStudents().size() : 0;
+                    return new CourseTeacherDto(course, deckCount, studentCount);
+                }
+        ).toList();
     }
 }
