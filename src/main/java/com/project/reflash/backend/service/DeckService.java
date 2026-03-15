@@ -27,9 +27,14 @@ public class DeckService {
     }
 
 
-    public List<DeckTeacherDto> getDecksOfTeacher(Integer studentId, Integer courseId) {
+    public List<DeckTeacherDto> getDecksOfTeacher(Integer teacherId, Integer courseId) {
         //TODO: check whether the course is accessible to this particular teacherId
-        return deckRepository.getDecksOfStudent(studentId, courseId).stream().map(DeckTeacherDto::new).toList();
+        return deckRepository.getDecksOfTeacher(teacherId, courseId).stream().map(
+                deck -> {
+                    Integer cardCount = deck.getNotes() != null ? deck.getNotes().size() : 0;
+                    return new DeckTeacherDto(deck, cardCount);
+                }
+        ).toList();
     }
 
 }
