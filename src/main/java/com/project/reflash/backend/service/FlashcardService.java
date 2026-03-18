@@ -49,57 +49,44 @@ public class FlashcardService {
      */
 
 
-
-
     public DeckDto getDeck(Integer deckId, Integer userId, String role) {
         //check if the deck is accessible to the user
         Deck deck = deckRepository.findById(deckId)
                 .orElseThrow(() -> new RuntimeException("Deck not found: " + deckId));
 
+        //RETRIEVE NEW CARDS
 
+        List<Note> newNotes = flashcardRepository.getNewCardsForStudent(deckId, PageRequest.of(0, 20));
 
-
-        //retrieve all the new notes from the deck
-        List<Note> newNotes = flashcardRepository.getNewCardsForStudent(deckId, userId, PageRequest.of(0, 20));
+        //create empty flashcards for the New Notes and convert to DTO
         List<Flashcard> newCards = newNotes.stream().map(Flashcard::new).toList();
-        List<FlashcardDto> allCards = newCards.stream().map(FlashcardDto::new).toList();
+        List<FlashcardDto> allCards = new ArrayList<>(newCards.stream().map(FlashcardDto::new).toList());
 
+
+
+        //RETRIEVE LEARNING AND RELEARNING CARDS
+
+        long currentTimeSeconds = Instant.now().getEpochSecond(); // UTC epoch seconds
+
+        List<Flashcard> learningRelearningCards = flashcardRepository.getLearningRelearingCardsForStudent(deckId,
+                currentTimeSeconds);
+        allCards.addAll(learningRelearningCards.stream().map(FlashcardDto::new).toList());
+
+
+
+        //RETRIEVE REVIEW CARDS
+        long deckCrtSeconds = deck.getCrt();
+
+        //TODO: shouldn't today be calculated based on NPT or timezone of the user?
+        long todaySeconds = LocalDate.now()
+                .atStartOfDay(ZoneId.of("UTC"))
+                .toEpochSecond();
+        long today = (todaySeconds - deckCrtSeconds) / 86400L;
+
+        List<Flashcard> reviewCards = flashcardRepository.getReviewCardsForStudent(deckId,
+                today);
+        allCards.addAll(reviewCards.stream().map(FlashcardDto::new).toList());
 
         return new DeckDto(deck, allCards);
-
     }
-//        Deck deck = deckRepository.findById(deckId)
-//                .orElseThrow(() -> new RuntimeException("Deck not found: " + deckId));
-//
-//        // "today" for review cards: number of days elapsed since the deck was created.
-//        long deckCrtSeconds = deck.getCrt();
-//
-//
-//        //TODO: shouldn't today be calculated based on NPT or timezone of the user?
-//        long todaySeconds = LocalDate.now()
-//                .atStartOfDay(ZoneId.of("UTC"))
-//                .toEpochSecond();
-//        long today = (todaySeconds - deckCrtSeconds) / 86400L;
-//
-//        //TODO: here we are using UTC seconds, because all data in the backend is stored in UTC
-//       long currentTimeSeconds = Instant.now().getEpochSecond(); // UTC epoch seconds
-//
-//        List<Flashcard> allCards = new ArrayList<>();
-//
-//        if ("STUDENT".equalsIgnoreCase(role)) {
-//            allCards.addAll(flashcardRepository.getNewCardsForStudent(deckId, userId, PageRequest.of(0, 20)));
-//            allCards.addAll(flashcardRepository.getLearningRelearningCardsForStudent(deckId, currentTimeSeconds, userId));
-//            allCards.addAll(flashcardRepository.getReviewCardsForStudent(deckId, today, userId));
-//        } else {
-//            allCards.addAll(flashcardRepository.getNewCardsForTeacher(deckId, userId, PageRequest.of(0, 20)));
-//            allCards.addAll(flashcardRepository.getLearningRelearningCardsForTeacher(deckId, currentTimeSeconds, userId));
-//            allCards.addAll(flashcardRepository.getReviewCardsForTeacher(deckId, today, userId));
-//        }
-//
-//        List<FlashcardDto> flashcardDtos = allCards.stream()
-//                .map(FlashcardDto::new)
-//                .toList();
-//
-//        return new DeckDto(deck, flashcardDtos);
-//    }
 }

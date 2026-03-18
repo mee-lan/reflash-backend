@@ -56,7 +56,7 @@ get_decks_teacher() {
 
 get_flashcard_students() {
   echo "Getting flashcards courses..."
-  curl -X GET "$BASE_URL/api/student/flashcards?deckId=2" -u $STD:$PASS -H "role:STUDENT" | jq .
+  curl -X GET "$BASE_URL/api/student/flashcards?deckId=1" -u $STD:$PASS -H "role:STUDENT" | jq .
   echo
 }
 

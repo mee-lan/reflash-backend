@@ -3,7 +3,6 @@ package com.project.reflash.backend.dto;
 import com.project.reflash.backend.algorithm.CardQueue;
 import com.project.reflash.backend.algorithm.CardType;
 import com.project.reflash.backend.entity.Flashcard;
-import com.project.reflash.backend.entity.Note;
 import lombok.Getter;
 import lombok.Setter;
 

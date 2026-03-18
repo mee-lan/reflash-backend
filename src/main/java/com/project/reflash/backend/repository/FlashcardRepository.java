@@ -15,92 +15,56 @@ public interface FlashcardRepository extends JpaRepository<Flashcard, Integer> {
 
     // ── Student-scoped queries ──────────────────────────────────────────────
 
-//    @Query("""
-//            SELECT f
-//            FROM Flashcard f
-//            JOIN f.deck d
-//            JOIN d.course c
-//            JOIN c.students s
-//            WHERE f.type = 'NEW' AND d.id = :deckId AND s.id = :userId
-//            ORDER BY f.crt
-//            """)
+    /*
+    sql query:
+
+    select notes.* from notes join decks ON notes.deck_id = decks.id left join flashcards ON flashcards.note_id = notes.id where decks.id = 1 AND flashcards.id is
+     null;
+
+     */
     @Query("""
-        SELECT n
-        FROM Note n
-            JOIN n.deck d
-            JOIN d.course.students s
-        WHERE n.flashCards IS EMPTY
-            AND d.id = :deckId
-            AND s.id = :userId
-    """)
+                SELECT n
+                FROM Note n
+                WHERE n.flashCards IS EMPTY
+                  AND n.deck.id = :deckId
+            """)
     List<Note> getNewCardsForStudent(@Param("deckId") Integer deckId,
-                                     @Param("userId") Integer userId,
                                      Pageable pageable);
-//
-//    @Query("""
-//            SELECT f
-//            FROM Flashcard f
-//            JOIN f.deck d
-//            JOIN d.course c
-//            JOIN c.students s
-//            WHERE (f.type = 'LEARNING' OR f.type = 'RELEARNING')
-//            AND f.due < :currentTime AND d.id = :deckId AND s.id = :userId
-//            """)
-//    List<Flashcard> getLearningRelearningCardsForStudent(@Param("deckId") Integer deckId,
-//                                                         @Param("currentTime") Long currentTime,
-//                                                         @Param("userId") Integer userId);
-//
-//    @Query("""
-//            SELECT f
-//            FROM Flashcard f
-//            JOIN f.deck d
-//            JOIN d.course c
-//            JOIN c.students s
-//            WHERE f.type = 'REVIEW'
-//            AND f.due < :today AND d.id = :deckId AND s.id = :userId
-//            """)
-//    List<Flashcard> getReviewCardsForStudent(@Param("deckId") Integer deckId,
-//                                             @Param("today") Long today,
-//                                             @Param("userId") Integer userId);
-//
-//    // ── Teacher-scoped queries ──────────────────────────────────────────────
-//
-//    @Query("""
-//            SELECT f
-//            FROM Flashcard f
-//            JOIN f.deck d
-//            JOIN d.course c
-//            JOIN c.teachers t
-//            WHERE f.type = 'NEW' AND d.id = :deckId AND t.id = :userId
-//            ORDER BY f.crt
-//            """)
-//    List<Flashcard> getNewCardsForTeacher(@Param("deckId") Integer deckId,
-//                                          @Param("userId") Integer userId,
-//                                          Pageable pageable);
-//
-//    @Query("""
-//            SELECT f
-//            FROM Flashcard f
-//            JOIN f.deck d
-//            JOIN d.course c
-//            JOIN c.teachers t
-//            WHERE (f.type = 'LEARNING' OR f.type = 'RELEARNING')
-//            AND f.due < :currentTime AND d.id = :deckId AND t.id = :userId
-//            """)
-//    List<Flashcard> getLearningRelearningCardsForTeacher(@Param("deckId") Integer deckId,
-//                                                         @Param("currentTime") Long currentTime,
-//                                                         @Param("userId") Integer userId);
-//
-//    @Query("""
-//            SELECT f
-//            FROM Flashcard f
-//            JOIN f.deck d
-//            JOIN d.course c
-//            JOIN c.teachers t
-//            WHERE f.type = 'REVIEW'
-//            AND f.due < :today AND d.id = :deckId AND t.id = :userId
-//            """)
-//    List<Flashcard> getReviewCardsForTeacher(@Param("deckId") Integer deckId,
-//                                             @Param("today") Long today,
-//                                             @Param("userId") Integer userId);
+
+    /*
+
+    sql query:
+
+    select flashcards.*, notes.* from flashcards join notes ON flashcards.note_id = notes.id join decks ON notes.deck_id = decks.id WHERE decks.id = 1 AND (flashcards.type = 'LEARNING' OR flashcards.type = 'RELEARNING');
+
+     */
+    @Query("""
+         select f
+          from Flashcard f
+            join f.note n
+                join n.deck d
+                    WHERE d.id = :deckId
+                        AND (f.type = 'LEARNING' OR f.type='RELEARNING')
+                            AND f.due < :currentTimeSeconds
+    """)
+    List<Flashcard> getLearningRelearingCardsForStudent(@Param("deckId") Integer deckId, @Param("currentTimeSeconds") Long currentTimeSeconds);
+
+
+    /*
+
+    sql query:
+
+    select flashcards.*, notes.* from flashcards join notes ON flashcards.note_id = notes.id join decks ON notes.deck_id = decks.id WHERE decks.id = 1 AND flashcards.type = 'REVIEW';
+
+     */
+    @Query("""
+         select f
+          from Flashcard f
+            join f.note n
+                join n.deck d
+                    WHERE d.id = :deckId
+                        AND f.type = 'REVIEW'
+                            AND f.due < :today
+    """)
+    List<Flashcard> getReviewCardsForStudent(@Param("deckId") Integer deckId, @Param("today") Long today);
 }

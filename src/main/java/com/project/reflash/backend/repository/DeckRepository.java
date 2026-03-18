@@ -34,4 +34,31 @@ public interface DeckRepository extends JpaRepository<Deck, Integer> {
        """)
     List<Deck> getDecksOfTeacher(@Param("teacherId") Integer teacherId,
                                    @Param("courseId") Integer courseId);
+
+
+
+    /*
+
+    RAW SQL QUERY: to access a deck by its id only if the student.id has access to it
+
+    select decks.* from decks, courses, course_student, students where decks.id = 1 AND courses.id = decks.course_id AND courses.id = course_student.course_id AND course_student.student_id = students.id AND students.id = 1;
+
+    ----------------------------------------------------------------------------
+
+    SIMPLIFIES SQL QUERY: to access a deck by its id only if the student.id has access to it
+
+    select decks.* from decks join courses ON decks.course_id = courses.id join course_student ON courses.id = course_student.course_id join students ON course_student.student_id = students.id where decks.id = 1 and students.id = 1;
+     */
+
+
+    @Query("""
+        SELECT d
+        FROM Deck d
+        join d.course c
+        join c.students cs
+        join c.students s
+        WHERE d.id = :deckId
+        AND cs.id = :userId
+    """)
+    List<Deck> getDeckByIdIfAccessible(@Param("deckId") Integer deckId, @Param("userId") Integer userId);
 }

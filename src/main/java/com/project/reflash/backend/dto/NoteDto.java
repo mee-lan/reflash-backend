@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 public class NoteDto {
-    private Integer id;
+    private Integer noteId;
     private String front;
     private String back;
     private String additionalContext;
@@ -17,7 +17,7 @@ public class NoteDto {
     private Long crt;
 
     public NoteDto(Note note) {
-        this.id = note.getId();
+        this.noteId = note.getId();
         this.front = note.getFront();
         this.back = note.getBack();
         this.additionalContext = note.getAdditionalContext();
