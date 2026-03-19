@@ -1,7 +1,7 @@
 package com.project.reflash.backend.controller;
 
 import com.project.reflash.backend.auth.user_details.StudentUserDetails;
-import com.project.reflash.backend.dto.DeckDto;
+import com.project.reflash.backend.dto.FlashcardsCollectionDto;
 import com.project.reflash.backend.response.ApiResponse;
 import com.project.reflash.backend.service.FlashcardService;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +29,7 @@ public class FlashcardController {
     public ResponseEntity<ApiResponse> getDeckForStudent(
             @AuthenticationPrincipal StudentUserDetails student,
             @RequestParam Integer deckId) {
-        DeckDto deck = flashcardService.getDeckStudent(deckId, student.getId());
+        FlashcardsCollectionDto deck = flashcardService.getDeckStudent(deckId, student.getId());
         return new ResponseEntity<>(new ApiResponse(deck), HttpStatus.OK);
     }
 

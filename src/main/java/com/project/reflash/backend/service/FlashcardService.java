@@ -1,6 +1,6 @@
 package com.project.reflash.backend.service;
 
-import com.project.reflash.backend.dto.DeckDto;
+import com.project.reflash.backend.dto.FlashcardsCollectionDto;
 import com.project.reflash.backend.dto.FlashcardDto;
 import com.project.reflash.backend.entity.Deck;
 import com.project.reflash.backend.entity.Flashcard;
@@ -48,7 +48,7 @@ public class FlashcardService {
      */
 
 
-    public DeckDto getDeckStudent(Integer deckId, Integer userId) {
+    public FlashcardsCollectionDto getDeckStudent(Integer deckId, Integer userId) {
         //check if the deck is accessible to the user
         Deck deck = deckRepository.getDeckByIdIfAccessibleByStudent(deckId, userId)
                 .orElseThrow(() -> new RuntimeException("Deck not found: " + deckId));
@@ -85,6 +85,6 @@ public class FlashcardService {
                 today);
         allCards.addAll(reviewCards.stream().map(FlashcardDto::new).toList());
 
-        return new DeckDto(deck, allCards);
+        return new FlashcardsCollectionDto(deck, allCards);
     }
 }

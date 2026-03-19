@@ -3,10 +3,7 @@ package com.project.reflash.backend.controller;
 
 import com.project.reflash.backend.auth.user_details.StudentUserDetails;
 import com.project.reflash.backend.auth.user_details.TeacherUserDetails;
-import com.project.reflash.backend.dto.CourseCreationDto;
-import com.project.reflash.backend.dto.DeckCreationDto;
-import com.project.reflash.backend.dto.DeckStudentDto;
-import com.project.reflash.backend.dto.DeckTeacherDto;
+import com.project.reflash.backend.dto.*;
 import com.project.reflash.backend.response.ApiResponse;
 import com.project.reflash.backend.service.DeckService;
 import lombok.extern.slf4j.Slf4j;
@@ -52,5 +49,16 @@ public class DeckController {
         deckService.createDeck(deckCreationDto);
         return new ResponseEntity<ApiResponse>(new ApiResponse("Deck Created Successfully"), HttpStatus.OK);
     }
+
+    @PreAuthorize("hasRole('TEACHER')")
+    @GetMapping("/teacher/deck-full")
+    public ResponseEntity<ApiResponse> getDeckForEdit(@RequestParam Integer deckId, @AuthenticationPrincipal TeacherUserDetails teacher) {
+        DeckEditDto deckEditDto = deckService.getDeckForEdit(deckId, teacher.getId());
+        return ResponseEntity.ok(new ApiResponse(deckEditDto));
+    }
+
+
+
+
 
 }

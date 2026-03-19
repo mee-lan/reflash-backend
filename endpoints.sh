@@ -11,7 +11,19 @@ login_student() {
   echo "Calling student login..."
   curl -X GET "$BASE_URL/login" -u $STD:$PASS -H "role:STUDENT" | jq .
   echo
+
 }
+
+get_deck_for_edit() {
+  echo "Fetching deck for edit..."
+
+  curl -X GET "$BASE_URL/api/teacher/deck-full?deckId=1" \
+    -u "$TCHR:$PASS" \
+    -H "role: TEACHER" | jq .
+
+  echo
+}
+
 
 login_administrator() {
   echo "Calling student login..."
