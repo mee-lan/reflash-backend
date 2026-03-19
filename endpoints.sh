@@ -14,6 +14,56 @@ login_student() {
 
 }
 
+edit_deck() {
+  echo "Editing deck with new data..."
+
+  curl -X PUT "$BASE_URL/api/teacher/edit-deck" \
+    -u "$TCHR:$PASS" \
+    -H "Content-Type: application/json" \
+    -H "role: TEACHER" \
+    -d '{
+      "deckId": 1,
+      "deckName": "UPDATED",
+      "deckDescription": "UPDATED",
+      "notes": [
+        {
+          "noteId": 1,
+          "front": "UPDATED",
+          "back": "UPDATED",
+          "additionalContext": "Solve ax²+bx+c=0, examples included",
+          "tags": ["algebra","UPDATED","formulas"]
+        },
+        {
+          "noteId": 2,
+          "front": "Slope-Intercept Form",
+          "back": "y = mx + b",
+          "additionalContext": "m is slope, b is y-intercept"
+        },
+        {
+          "noteId": 4,
+          "front": "UPDATED",
+          "back": "First Outer Inner Last",
+          "additionalContext": "UPDATED",
+          "tags": ["UPDATED","multiplication"]
+        },
+        {
+          "front": "NEW CARD",
+          "back": "NEW CARD",
+          "additionalContext": "NEW CARD",
+          "tags": ["algebra","matrices","linear algebra"]
+        },
+        {
+          "front": "NEW CARD 2",
+          "back": "NEW CARD 2",
+          "additionalContext": "NEW CARD 2",
+          "tags": ["biology","plants","science"]
+        }
+      ]
+    }' | jq .
+
+  echo
+}
+
 get_deck_for_edit() {
   echo "Fetching deck for edit..."
 

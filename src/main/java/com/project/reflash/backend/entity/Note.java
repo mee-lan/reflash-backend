@@ -18,7 +18,10 @@ public class Note {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToMany(mappedBy="note")
+    @OneToMany(
+    mappedBy = "note",
+    cascade = CascadeType.ALL,
+    orphanRemoval = true)       // This ensures removed items are actually deleted from DB
     private List<Flashcard> flashCards;
 
     @ManyToOne

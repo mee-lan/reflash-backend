@@ -1,19 +1,21 @@
 package com.project.reflash.backend.service;
 
-import com.project.reflash.backend.dto.DeckCreationDto;
-import com.project.reflash.backend.dto.DeckEditDto;
-import com.project.reflash.backend.dto.DeckStudentDto;
-import com.project.reflash.backend.dto.DeckTeacherDto;
+import com.project.reflash.backend.dto.*;
 import com.project.reflash.backend.entity.Course;
 import com.project.reflash.backend.entity.Deck;
+import com.project.reflash.backend.entity.Note;
 import com.project.reflash.backend.repository.CourseRepository;
 import com.project.reflash.backend.repository.DeckRepository;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -68,5 +70,51 @@ public class DeckService {
         DeckEditDto deckEditDto = new DeckEditDto(deck);
 
         return deckEditDto;
+    }
+
+
+    @Transactional
+    @PreAuthorize("hasRole('TEACHER')")
+    public void resaveDeckWithNewData(DeckEditDto dto, Integer userId) {
+        Deck deck = deckRepository.getDeckByIdIfAccessibleByTeacher(dto.getDeckId(), userId)
+                .orElseThrow(() -> new RuntimeException("Deck not found or access denied"));
+
+        deck.setName(dto.getDeckName());
+        deck.setDescription(dto.getDeckDescription());
+
+        // 1. Handle Deletions & Updates
+        // We create a map of notes that HAVE IDs (existing notes)
+        Map<Integer, NoteEditDto> existingNoteUpdates = dto.getNotes().stream()
+                .filter(n -> n.getNoteId() != null)
+                .collect(Collectors.toMap(NoteEditDto::getNoteId, n -> n));
+
+        // Remove notes from the deck that aren't in the DTO
+        deck.getNotes().removeIf(note -> !existingNoteUpdates.containsKey(note.getId()));
+
+        // Update the remaining existing notes
+        deck.getNotes().forEach(note -> {
+            NoteEditDto update = existingNoteUpdates.get(note.getId());
+            updateNoteFields(note, update); // Extracted to a small helper method
+        });
+
+        // 2. Handle Creations
+        // Find notes in the DTO that DON'T have an ID and add them
+        dto.getNotes().stream()
+                .filter(n -> n.getNoteId() == null)
+                .forEach(newNoteDto -> {
+                    Note newNote = new Note();
+                    updateNoteFields(newNote, newNoteDto);
+                    newNote.setDeck(deck); // Set the relationship
+                    deck.getNotes().add(newNote);
+                });
+
+        // No save() needed thanks to @Transactional!
+    }
+
+    private void updateNoteFields(Note note, NoteEditDto dto) {
+        note.setFront(dto.getFront());
+        note.setBack(dto.getBack());
+        note.setAdditionalContext(dto.getAdditionalContext());
+        note.setTags(dto.getTags() != null ? dto.getTags() : new ArrayList<>());
     }
 }

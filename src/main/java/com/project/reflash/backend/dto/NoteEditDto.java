@@ -2,16 +2,20 @@ package com.project.reflash.backend.dto;
 
 import com.project.reflash.backend.entity.Note;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
 @Getter
+@Setter
+@NoArgsConstructor
 public class NoteEditDto {
-    private final Integer noteId;
-    private final String front;
-    private final String back;
-    private final String additionalContext;
-    private final List<String> tags;
+    private Integer noteId;
+    private String front;
+    private String back;
+    private String additionalContext;
+    private List<String> tags;
 
     public NoteEditDto(Note note) {
         this.noteId = note.getId();

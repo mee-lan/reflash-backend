@@ -2,15 +2,19 @@ package com.project.reflash.backend.dto;
 
 import com.project.reflash.backend.entity.Deck;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
 @Getter
+@Setter
+@NoArgsConstructor
 public class DeckEditDto {
-    private final Integer deckId;
-    private final String deckName;
-    private final String deckDescription;
-    private final List<NoteEditDto> notes;
+    private Integer deckId;
+    private String deckName;
+    private String deckDescription;
+    private List<NoteEditDto> notes;
 
     public DeckEditDto(Deck deck) {
         this.deckId = deck.getId();

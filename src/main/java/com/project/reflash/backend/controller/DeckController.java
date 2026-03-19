@@ -58,7 +58,10 @@ public class DeckController {
     }
 
 
-
-
-
+    @PreAuthorize("hasRole('TEACHER')")
+    @PutMapping("/teacher/edit-deck")
+    public ResponseEntity<ApiResponse> resaveDeckWithNewData(@RequestBody DeckEditDto deckEditDto, @AuthenticationPrincipal TeacherUserDetails teacher) {
+        deckService.resaveDeckWithNewData(deckEditDto, teacher.getId());
+        return ResponseEntity.ok(new ApiResponse("Edit Successful"));
+    }
 }

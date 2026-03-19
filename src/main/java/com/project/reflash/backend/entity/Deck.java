@@ -39,7 +39,7 @@ public class Deck {
     @JoinColumn(name="course_id", referencedColumnName="id")
     Course course;
 
-    @OneToMany(mappedBy="deck")
+    @OneToMany(mappedBy="deck", orphanRemoval = true, cascade = CascadeType.ALL)
     List<Note> notes;
 
     public Deck(String name) {
