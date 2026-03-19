@@ -12,7 +12,7 @@ VALUES (1, 'John', 'Doe', '{noop}password', '10', 'A', '1', '2026'),
 -- =============================================
 INSERT INTO teachers (firstname, lastname, username, password, email)
 VALUES ('First', 'Teacher', 'username', '{noop}password', 'username@pcampus.edu.np'),
-       ('Second', 'Teacher', 'new_username', '{noop}password', 'username@pcampus.edu.np');
+       ('Second', 'Teacher', 'new_username_1', '{noop}password', 'username@pcampus.edu.np');
 
 
 

@@ -39,6 +39,24 @@ create_student_profile() {
   echo
 }
 
+create_teacher_profile() {
+  echo "Creating teacher profile..."
+
+  curl -X POST "$BASE_URL/api/admin/teacher-profile" \
+    -u "$ADMN:$PASS" \
+    -H "Content-Type: application/json" \
+    -H "role: ADMINISTRATOR" \
+    -d '{
+      "firstName": "New",
+      "lastName": "Teacher",
+      "password": "password",
+      "email": "alice.smith@example.com",
+      "username": "new_username"
+    }' | jq .
+
+  echo
+}
+
 
 
 create_course() {
