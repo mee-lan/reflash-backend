@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface DeckRepository extends JpaRepository<Deck, Integer> {
@@ -56,9 +57,19 @@ public interface DeckRepository extends JpaRepository<Deck, Integer> {
         FROM Deck d
         join d.course c
         join c.students cs
-        join c.students s
         WHERE d.id = :deckId
         AND cs.id = :userId
     """)
-    List<Deck> getDeckByIdIfAccessible(@Param("deckId") Integer deckId, @Param("userId") Integer userId);
+    Optional<Deck> getDeckByIdIfAccessibleByStudent(@Param("deckId") Integer deckId, @Param("userId") Integer userId);
+
+
+    @Query("""
+        SELECT d
+        FROM Deck d
+        join d.course c
+        join c.teachers t
+        WHERE d.id = :deckId
+        AND t.id = :userId
+    """)
+    Optional<Deck> getDeckByIdIfAccessibleByTeacher(@Param("deckId") Integer deckId, @Param("userId") Integer userId);
 }

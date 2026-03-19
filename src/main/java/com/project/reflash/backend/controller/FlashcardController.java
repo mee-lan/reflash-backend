@@ -1,7 +1,6 @@
 package com.project.reflash.backend.controller;
 
 import com.project.reflash.backend.auth.user_details.StudentUserDetails;
-import com.project.reflash.backend.auth.user_details.TeacherUserDetails;
 import com.project.reflash.backend.dto.DeckDto;
 import com.project.reflash.backend.response.ApiResponse;
 import com.project.reflash.backend.service.FlashcardService;
@@ -30,7 +29,7 @@ public class FlashcardController {
     public ResponseEntity<ApiResponse> getDeckForStudent(
             @AuthenticationPrincipal StudentUserDetails student,
             @RequestParam Integer deckId) {
-        DeckDto deck = flashcardService.getDeck(deckId, student.getId(), "STUDENT");
+        DeckDto deck = flashcardService.getDeckStudent(deckId, student.getId(), "STUDENT");
         return new ResponseEntity<>(new ApiResponse(deck), HttpStatus.OK);
     }
 

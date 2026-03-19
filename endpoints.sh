@@ -161,6 +161,14 @@ get_flashcard_students() {
 }
 
 
+get_notes_by_deck() {
+  echo "Getting flashcards courses..."
+  curl -X GET "$BASE_URL/api/teacher/notes-by-deck?deckId=1" -u $TCHR:$PASS -H "role:TEACHER" | jq .
+  echo
+}
+
+
+
 
 generate_flashcards() {
   echo "Fetching cards..."

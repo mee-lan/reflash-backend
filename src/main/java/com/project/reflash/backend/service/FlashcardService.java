@@ -9,7 +9,6 @@ import com.project.reflash.backend.repository.DeckRepository;
 import com.project.reflash.backend.repository.FlashcardRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -49,13 +48,12 @@ public class FlashcardService {
      */
 
 
-    public DeckDto getDeck(Integer deckId, Integer userId, String role) {
+    public DeckDto getDeckStudent(Integer deckId, Integer userId, String role) {
         //check if the deck is accessible to the user
-        Deck deck = deckRepository.findById(deckId)
+        Deck deck = deckRepository.getDeckByIdIfAccessibleByStudent(deckId, userId)
                 .orElseThrow(() -> new RuntimeException("Deck not found: " + deckId));
 
         //RETRIEVE NEW CARDS
-
         List<Note> newNotes = flashcardRepository.getNewCardsForStudent(deckId, PageRequest.of(0, 20));
 
         //create empty flashcards for the New Notes and convert to DTO

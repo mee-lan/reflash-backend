@@ -1,6 +1,7 @@
 package com.project.reflash.backend.service;
 
 import com.project.reflash.backend.dto.NoteCreationDto;
+import com.project.reflash.backend.dto.NoteDto;
 import com.project.reflash.backend.entity.Deck;
 import com.project.reflash.backend.entity.Note;
 import com.project.reflash.backend.repository.DeckRepository;
@@ -44,5 +45,16 @@ public class NoteService {
         note.setTags(noteCreationDto.getTags() != null ? noteCreationDto.getTags() : new ArrayList<>());
 
         return note;
+    }
+
+
+    public List<NoteDto> getNotesForADeckTeacher(Integer deckId, Integer userId) {
+        //TODO: verifies that the deck is accessible to the teacher
+        Deck deck = deckRepository.getDeckByIdIfAccessibleByTeacher(deckId, userId).orElseThrow(() -> new RuntimeException("Deck is not accessible"));
+
+        List<Note> notes = deck.getNotes();
+        List<NoteDto> notesDto = notes.stream().map(NoteDto::new).toList();
+
+        return notesDto;
     }
 }
