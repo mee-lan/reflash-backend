@@ -3,6 +3,8 @@ package com.project.reflash.backend.controller;
 
 import com.project.reflash.backend.auth.user_details.StudentUserDetails;
 import com.project.reflash.backend.auth.user_details.TeacherUserDetails;
+import com.project.reflash.backend.dto.CourseCreationDto;
+import com.project.reflash.backend.dto.DeckCreationDto;
 import com.project.reflash.backend.dto.DeckStudentDto;
 import com.project.reflash.backend.dto.DeckTeacherDto;
 import com.project.reflash.backend.response.ApiResponse;
@@ -12,10 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -45,4 +44,13 @@ public class DeckController {
         List<DeckTeacherDto> decks = deckService.getDecksOfTeacher(teacher.getId(), courseId);
         return new ResponseEntity<ApiResponse>(new ApiResponse(decks), HttpStatus.OK);
     }
+
+
+    @PreAuthorize("hasRole('TEACHER')")
+    @PostMapping("/teacher/empty-deck")
+    public ResponseEntity<ApiResponse> createDeck(@RequestBody DeckCreationDto deckCreationDto) {
+        deckService.createDeck(deckCreationDto);
+        return new ResponseEntity<ApiResponse>(new ApiResponse("Deck Created Successfully"), HttpStatus.OK);
+    }
+
 }

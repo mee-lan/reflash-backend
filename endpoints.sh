@@ -40,6 +40,22 @@ create_course() {
   echo
 }
 
+create_empty_deck() {
+  echo "Creating deck..."
+
+  curl -X POST "$BASE_URL/api/teacher/empty-deck" \
+    -u "$TCHR:$PASS" \
+    -H "Content-Type: application/json" \
+    -H "role: TEACHER" \
+    -d '{
+      "deckName": "New Deck",
+      "deckDescription": "New Deck Description",
+      "courseId": 1
+    }' | jq .
+
+  echo
+}
+
 
 get_all_teachers() {
     echo "Getting all teachers..."

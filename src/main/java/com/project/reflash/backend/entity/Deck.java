@@ -14,7 +14,6 @@ import java.util.List;
 @Table(name = "decks")
 @AllArgsConstructor
 @Builder
-@NoArgsConstructor
 public class Deck {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,9 +43,12 @@ public class Deck {
     List<Note> notes;
 
     public Deck(String name) {
+        this();
         this.name  = name;
-        this.notes = new ArrayList<>();
+    }
 
+    public Deck() {
+        this.notes = new ArrayList<>();
         this.crt = LocalDate.now()
                 .atStartOfDay(ZoneId.of("UTC"))
                 .toEpochSecond();

@@ -1,21 +1,28 @@
 package com.project.reflash.backend.service;
 
+import com.project.reflash.backend.dto.DeckCreationDto;
 import com.project.reflash.backend.dto.DeckStudentDto;
 import com.project.reflash.backend.dto.DeckTeacherDto;
+import com.project.reflash.backend.entity.Course;
+import com.project.reflash.backend.entity.Deck;
+import com.project.reflash.backend.repository.CourseRepository;
 import com.project.reflash.backend.repository.DeckRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
 public class DeckService {
 
     DeckRepository deckRepository;
+    CourseRepository courseRepository;
 
-    public DeckService(DeckRepository deckRepository) {
+    public DeckService(DeckRepository deckRepository, CourseRepository courseRepository) {
         this.deckRepository = deckRepository;
+        this.courseRepository = courseRepository;
     }
 
     public List<DeckStudentDto> getDecksofStudent(Integer studentId, Integer courseId) {
@@ -35,5 +42,18 @@ public class DeckService {
                     return new DeckTeacherDto(deck, cardCount);
                 }
         ).toList();
+    }
+
+    public void createDeck(DeckCreationDto deckCreationDto) {
+        Deck deck = new Deck();
+        deck.setName(deckCreationDto.getDeckName());
+        deck.setDescription(deckCreationDto.getDeckDescription());
+        Optional<Course> course = courseRepository.findById(deckCreationDto.getCourseId());
+        if(course.isEmpty()) {
+            throw new RuntimeException("Submitted Course ID does not exist");
+        }
+
+        deck.setCourse(course.get());
+        deckRepository.save(deck);
     }
 }
