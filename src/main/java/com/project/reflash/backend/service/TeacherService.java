@@ -1,5 +1,6 @@
 package com.project.reflash.backend.service;
 
+import com.project.reflash.backend.dto.TeacherDto;
 import com.project.reflash.backend.entity.Teacher;
 import com.project.reflash.backend.exception.ExceptionMessage;
 import com.project.reflash.backend.exception.UserDoesNotExistException;
@@ -7,6 +8,7 @@ import com.project.reflash.backend.repository.TeacherRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -36,5 +38,10 @@ public class TeacherService {
         } else {
             throw new UserDoesNotExistException(ExceptionMessage.USER_DOES_NOT_EXIST);
         }
+    }
+
+    public List<TeacherDto> getAllTeachers() {
+        List<Teacher> teachers = teacherRepository.getAllTeacher();
+        return teachers.stream().map(TeacherDto::new).toList();
     }
 }

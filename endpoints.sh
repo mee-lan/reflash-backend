@@ -2,6 +2,7 @@
 
 STD="2026_10_A_1"
 TCHR="username"
+ADMN="username"
 PASS="password"
 BASE_URL="http://localhost:8080"
 
@@ -14,8 +15,14 @@ login_student() {
 
 login_administrator() {
   echo "Calling student login..."
-  curl -X GET "$BASE_URL/login" -u $TCHR:$PASS -H "role:ADMINISTRATOR" | jq .
+  curl -X GET "$BASE_URL/login" -u $ADMN:$PASS -H "role:ADMINISTRATOR" | jq .
   echo
+}
+
+get_all_teachers() {
+    echo "Getting all teachers..."
+    curl -X GET "$BASE_URL/api/teacher/all" -u $ADMN:$PASS -H "role:ADMINISTRATOR" | jq .
+    echo
 }
 
 login_student_failure() {
