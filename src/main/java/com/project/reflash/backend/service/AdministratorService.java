@@ -21,17 +21,4 @@ public class AdministratorService {
     }
 
 
-    public Administrator loadAdministrator(String username) {
-        if (username == null || username.isBlank()) {
-            throw new UserDoesNotExistException(ExceptionMessage.INVALID_USERNAME);
-        }
-
-        Optional<Administrator> administrator = administratorRepository.findByUsername(username);
-
-        if (administrator.isPresent()) {
-            return administrator.get();
-        } else {
-            throw new UserDoesNotExistException(ExceptionMessage.USER_DOES_NOT_EXIST);
-        }
-    }
 }

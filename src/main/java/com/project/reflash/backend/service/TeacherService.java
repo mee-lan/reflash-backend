@@ -20,26 +20,6 @@ public class TeacherService {
         this.teacherRepository = teacherRepository;
     }
 
-    /**
-     *
-     * @param username
-     * @return teacher
-     * @throws UserDoesNotExistException if teacher with the given username does not exist
-     */
-    public Teacher loadTeacher(String username) {
-        if (username == null || username.isBlank()) {
-            throw new UserDoesNotExistException(ExceptionMessage.INVALID_USERNAME);
-        }
-
-        Optional<Teacher> teacher = teacherRepository.findByUsername(username);
-
-        if (teacher.isPresent()) {
-            return teacher.get();
-        } else {
-            throw new UserDoesNotExistException(ExceptionMessage.USER_DOES_NOT_EXIST);
-        }
-    }
-
     public List<TeacherDto> getAllTeachers() {
         List<Teacher> teachers = teacherRepository.getAllTeacher();
         return teachers.stream().map(TeacherDto::new).toList();
