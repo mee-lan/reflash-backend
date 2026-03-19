@@ -45,5 +45,15 @@ public class NoteController {
     public ResponseEntity<ApiResponse> getNotesByDeck(@RequestParam Integer deckId, @AuthenticationPrincipal TeacherUserDetails teacher) {
         List<NoteDto> notes = noteService.getNotesForADeckTeacher(deckId, teacher.getId());
         return new ResponseEntity<ApiResponse>(new ApiResponse(notes), HttpStatus.OK);
+
+
+    }
+
+
+    @PreAuthorize("hasRole('TEACHER')")
+    @GetMapping("/teacher/questions")
+    public ResponseEntity<ApiResponse> generateQuestions(@RequestParam List<Integer> deckIds, @RequestParam Integer count, @AuthenticationPrincipal TeacherUserDetails teacherUserDetails) {
+        List<String> questions = noteService.getQuestionsFromDeck(deckIds, count, teacherUserDetails.getId());
+        return new ResponseEntity<ApiResponse>(new ApiResponse(questions), HttpStatus.OK);
     }
 }

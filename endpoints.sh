@@ -14,6 +14,16 @@ login_student() {
 
 }
 
+get_questions() {
+  echo "Generating questions from decks 1,2,3,4 with count 5..."
+
+  curl -X GET "$BASE_URL/api/teacher/questions?deckIds=1,2,3,4&count=5" \
+    -u "$TCHR:$PASS" \
+    -H "role: TEACHER" | jq .
+
+  echo
+}
+
 
 get_course_for_edit() {
   echo "Fetching deck for edit..."
