@@ -49,6 +49,10 @@ public class Flashcard {
     @JoinColumn(name="note_id", referencedColumnName="id")
     private Note note ;
 
+    @ManyToOne
+    @JoinColumn(name="student_id", referencedColumnName="id")
+    private Student student;
+
     public Flashcard(Note note) {
         this.note   = note;
         this.type   = CardType.NEW;

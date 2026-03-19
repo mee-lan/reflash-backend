@@ -4,10 +4,12 @@ import com.project.reflash.backend.algorithm.CardQueue;
 import com.project.reflash.backend.algorithm.CardType;
 import com.project.reflash.backend.entity.Flashcard;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class FlashcardDto {
     private Integer id;
     private NoteDto note;

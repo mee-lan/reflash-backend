@@ -40,4 +40,11 @@ public class Student {
 
     @ManyToMany(mappedBy = "students", fetch = FetchType.LAZY)
     private List<Course> courses;
+
+
+    @OneToMany(
+            mappedBy = "student",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<Flashcard> flashCards;
 }

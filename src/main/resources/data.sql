@@ -162,6 +162,14 @@ VALUES
     -- REVIEW: due 1 day before today relative to deck 1 creation
     (4, 4, 'REVIEW', 'REVIEW', 3, 2500, 0, 0, 2,
      DATEDIFF(DAY, TIMESTAMP '2026-03-01 00:00:00', CURRENT_DATE()) - 1, 1),
+
+
+     -- Deck 1 - for student id 2
+    (17, 3, 'LEARNING', 'LEARNING', 1, 2500, 0, 1, 2,
+     DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()) - 600 - 86400, 2),
+    -- REVIEW: due 1 day before today relative to deck 1 creation
+    (18, 4, 'REVIEW', 'REVIEW', 3, 2500, 0, 0, 2,
+     DATEDIFF(DAY, TIMESTAMP '2026-03-01 00:00:00', CURRENT_DATE()) - 1, 2),
 --
     -- Deck 2 – Chemistry Foundations (course 2)
     (5, 5, 'LEARNING', 'LEARNING', 0, 0, 0, 0, 1, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 2),

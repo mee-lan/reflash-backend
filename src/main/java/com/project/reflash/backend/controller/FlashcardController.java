@@ -1,6 +1,7 @@
 package com.project.reflash.backend.controller;
 
 import com.project.reflash.backend.auth.user_details.StudentUserDetails;
+import com.project.reflash.backend.dto.FlashcardDto;
 import com.project.reflash.backend.dto.FlashcardsCollectionDto;
 import com.project.reflash.backend.response.ApiResponse;
 import com.project.reflash.backend.service.FlashcardService;
@@ -9,10 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -33,12 +33,12 @@ public class FlashcardController {
         return new ResponseEntity<>(new ApiResponse(deck), HttpStatus.OK);
     }
 
-//    @PreAuthorize("hasRole('TEACHER')")
-//    @GetMapping("/teacher/flashcards")
-//    public ResponseEntity<ApiResponse> getDeckForTeacher(
-//            @AuthenticationPrincipal TeacherUserDetails teacher,
-//            @RequestParam Integer deckId) {
-//        DeckDto deck = flashcardService.getDeck(deckId, teacher.getId(), "TEACHER");
-//        return new ResponseEntity<>(new ApiResponse(deck), HttpStatus.OK);
-//    }
+    @PreAuthorize("hasRole('STUDENT')")
+    @PutMapping("/student/flashcards")
+    public ResponseEntity<ApiResponse> updateFlashcards(@RequestBody List<FlashcardDto> flashcardDtos,
+                                                        @AuthenticationPrincipal StudentUserDetails student,
+                                                        @RequestParam Integer deckId) {
+        flashcardService.updateFlashcards(flashcardDtos, deckId, student.getId());
+        return new ResponseEntity<>(new ApiResponse("Updation Successful"), HttpStatus.OK);
+    }
 }

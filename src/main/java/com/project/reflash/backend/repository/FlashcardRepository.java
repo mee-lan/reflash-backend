@@ -28,7 +28,7 @@ public interface FlashcardRepository extends JpaRepository<Flashcard, Integer> {
                 WHERE n.flashCards IS EMPTY
                   AND n.deck.id = :deckId
             """)
-    List<Note> getNewCardsForStudent(@Param("deckId") Integer deckId,
+    List<Note> getNewNotesForStudent(@Param("deckId") Integer deckId,
                                      Pageable pageable);
 
     /*
@@ -39,15 +39,29 @@ public interface FlashcardRepository extends JpaRepository<Flashcard, Integer> {
 
      */
     @Query("""
-         select f
-          from Flashcard f
-            join f.note n
-                join n.deck d
-                    WHERE d.id = :deckId
-                        AND (f.type = 'LEARNING' OR f.type='RELEARNING')
-                            AND f.due < :currentTimeSeconds
-    """)
-    List<Flashcard> getLearningRelearingCardsForStudent(@Param("deckId") Integer deckId, @Param("currentTimeSeconds") Long currentTimeSeconds);
+                 select f
+                  from Flashcard f
+                    join f.note n
+                        join n.deck d
+                                    join f.student s
+                            WHERE d.id = :deckId
+                                AND (f.type = 'LEARNING' OR f.type='RELEARNING')
+                                    AND f.due < :currentTimeSeconds
+                                                AND s.id = :studentId
+            """)
+    List<Flashcard> getLearningRelearingCardsForStudent(@Param("deckId") Integer deckId, @Param("currentTimeSeconds") Long currentTimeSeconds, @Param("studentId") Integer studentId);
+
+    @Query("""
+                 select f
+                  from Flashcard f
+                    join f.note n
+                        join n.deck d
+                                    join f.student s
+                            WHERE d.id = :deckId
+                                AND f.type = 'NEW'
+                                            AND s.id = :studentId
+            """)
+    List<Flashcard> getNewCardsForStudent(@Param("deckId") Integer deckId, @Param("studentId") Integer studentId);
 
 
     /*
@@ -58,13 +72,28 @@ public interface FlashcardRepository extends JpaRepository<Flashcard, Integer> {
 
      */
     @Query("""
-         select f
-          from Flashcard f
-            join f.note n
-                join n.deck d
-                    WHERE d.id = :deckId
-                        AND f.type = 'REVIEW'
-                            AND f.due < :today
-    """)
-    List<Flashcard> getReviewCardsForStudent(@Param("deckId") Integer deckId, @Param("today") Long today);
+                 select f
+                  from Flashcard f
+                    join f.note n
+                        join n.deck d
+                                    join f.student s
+                            WHERE d.id = :deckId
+                                AND f.type = 'REVIEW'
+                                    AND f.due < :today
+                                                AND s.id = :studentId
+            """)
+    List<Flashcard> getReviewCardsForStudent(@Param("deckId") Integer deckId, @Param("today") Long today, @Param("studentId") Integer studentId);
+
+
+
+    @Query("""
+                select f
+                from Flashcard f
+                    join f.note n
+                    join n.deck d
+                WHERE d.id = :deckId
+                  AND f.id in :flashcardIds
+                  AND f.student.id = :studentId
+            """)
+    List<Flashcard> getCardsByIdsOfADeck(@Param("flashcardIds") List<Integer> flashcardIds, @Param("deckId") Integer deckId, @Param("studentId") Integer studentId);
 }
