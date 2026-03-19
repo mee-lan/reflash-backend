@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -18,4 +19,7 @@ public interface StudentRepository extends JpaRepository<Student, Integer> {
                 @Param("grade") String grade,
                 @Param("section") String section,
                 @Param("roll") String roll);
+
+        @Query("Select s from Student s where s.grade= :grade")
+        List<Student> getAllStudentsByGrade(@Param("grade") String grade);
 }

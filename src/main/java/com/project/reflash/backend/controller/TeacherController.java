@@ -19,7 +19,7 @@ import java.util.List;
 @Slf4j
 @RequestMapping("/api")
 public class TeacherController {
-    private TeacherService teacherService;
+    private final TeacherService teacherService;
 
     TeacherController(TeacherService teacherService) {
         this.teacherService = teacherService;
@@ -27,7 +27,6 @@ public class TeacherController {
 
     @PreAuthorize("hasRole('ADMINISTRATOR')")
     @GetMapping("/teacher/all")
-
     public ResponseEntity<ApiResponse> getAllTeachers() {
         List<TeacherDto> teachers = teacherService.getAllTeachers();
         return new ResponseEntity<ApiResponse>(new ApiResponse(teachers), HttpStatus.OK);

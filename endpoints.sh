@@ -25,6 +25,12 @@ get_all_teachers() {
     echo
 }
 
+get_students_by_grade() {
+    echo "Getting students by grade..."
+    curl -X GET "$BASE_URL/api/student/by-grade?grade=10" -u $ADMN:$PASS -H "role:ADMINISTRATOR" | jq .
+    echo
+}
+
 login_student_failure() {
   echo "Calling student login..."
   curl -X GET "$BASE_URL/login" -u $STD:"random" -H "role:STUDENT" | jq .
