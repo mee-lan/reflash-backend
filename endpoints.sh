@@ -14,6 +14,20 @@ login_student() {
 
 }
 
+
+get_course_for_edit() {
+  echo "Fetching deck for edit..."
+
+  curl -X GET "$BASE_URL/api/admin/course-full?courseId=1" \
+    -u "$ADMN:$PASS" \
+    -H "role: ADMINISTRATOR" | jq .
+
+  echo
+}
+
+
+#addition context and tags removed from note id = 2;
+
 edit_deck() {
   echo "Editing deck with new data..."
 
@@ -36,8 +50,7 @@ edit_deck() {
         {
           "noteId": 2,
           "front": "Slope-Intercept Form",
-          "back": "y = mx + b",
-          "additionalContext": "m is slope, b is y-intercept"
+          "back": "y = mx + b"
         },
         {
           "noteId": 4,

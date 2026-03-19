@@ -3,9 +3,7 @@ package com.project.reflash.backend.controller;
 
 import com.project.reflash.backend.auth.user_details.StudentUserDetails;
 import com.project.reflash.backend.auth.user_details.TeacherUserDetails;
-import com.project.reflash.backend.dto.CourseCreationDto;
-import com.project.reflash.backend.dto.CourseStudentDto;
-import com.project.reflash.backend.dto.CourseTeacherDto;
+import com.project.reflash.backend.dto.*;
 import com.project.reflash.backend.response.ApiResponse;
 import com.project.reflash.backend.service.CourseService;
 import jakarta.servlet.http.HttpSession;
@@ -49,5 +47,13 @@ public class CourseController {
     public ResponseEntity<ApiResponse> getCoursesOfStudent(HttpSession session, @AuthenticationPrincipal TeacherUserDetails teacher) {
         List<CourseTeacherDto> courses = courseService.getCoursesOfTeacher(teacher.getId());
         return new ResponseEntity<ApiResponse>(new ApiResponse(courses), HttpStatus.OK);
+    }
+
+
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @GetMapping("/admin/course-full")
+    public ResponseEntity<ApiResponse> getCourseForEdit(@RequestParam Integer courseId) {
+        CourseEditDto courseEditDto = courseService.getCourseForEdit(courseId);
+        return ResponseEntity.ok(new ApiResponse(courseEditDto));
     }
 }

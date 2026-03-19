@@ -1,15 +1,15 @@
 package com.project.reflash.backend.service;
 
-import com.project.reflash.backend.dto.CourseCreationDto;
-import com.project.reflash.backend.dto.CourseStudentDto;
-import com.project.reflash.backend.dto.CourseTeacherDto;
+import com.project.reflash.backend.dto.*;
 import com.project.reflash.backend.entity.Course;
 import com.project.reflash.backend.entity.Student;
 import com.project.reflash.backend.entity.Teacher;
 import com.project.reflash.backend.repository.CourseRepository;
 import com.project.reflash.backend.repository.StudentRepository;
 import com.project.reflash.backend.repository.TeacherRepository;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -55,6 +55,7 @@ public class CourseService {
         ).toList();
     }
 
+    @Transactional
     public void createCourse(CourseCreationDto courseCreationDto) {
         //TODO: validate that the courseCreationDto is valid, there must be students and teachers, courseName, description, and other fields
 
@@ -81,5 +82,20 @@ public class CourseService {
         course.setStudents(students);
 
         courseRepository.save(course);
+    }
+
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    public CourseEditDto getCourseForEdit(Integer courseId) {
+
+        Course course = courseRepository.findById(courseId).orElseThrow(()-> new RuntimeException("Course with the given id not found"));
+
+        CourseEditDto courseEditDto = new CourseEditDto(course);
+        return courseEditDto;
+    }
+
+    @Transactional
+    public void resaveCourseWithNewData(CourseCreationDto dto) {
+
+
     }
 }
