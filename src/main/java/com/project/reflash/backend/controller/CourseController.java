@@ -56,4 +56,12 @@ public class CourseController {
         CourseEditDto courseEditDto = courseService.getCourseForEdit(courseId);
         return ResponseEntity.ok(new ApiResponse(courseEditDto));
     }
+
+
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @PutMapping("/admin/edit-course")
+    public ResponseEntity<ApiResponse> resaveCourseWithNewData(@RequestBody CourseEditDto courseEditDto) {
+        courseService.resaveCourseWithNewData(courseEditDto);
+        return ResponseEntity.ok(new ApiResponse("Edit Successful"));
+    }
 }

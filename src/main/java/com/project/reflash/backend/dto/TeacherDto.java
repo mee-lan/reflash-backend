@@ -3,10 +3,12 @@ package com.project.reflash.backend.dto;
 import com.project.reflash.backend.auth.user_details.TeacherUserDetails;
 import com.project.reflash.backend.entity.Teacher;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Setter
 @Getter
+@NoArgsConstructor
 public class TeacherDto {
     private Integer id;
     private String firstName;

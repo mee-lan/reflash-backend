@@ -25,6 +25,33 @@ get_course_for_edit() {
   echo
 }
 
+edit_course() {
+  echo "Editing course with new data..."
+
+  curl -X PUT "$BASE_URL/api/admin/edit-course" \
+    -u "$ADMN:$PASS" \
+    -H "Content-Type: application/json" \
+    -H "role: ADMINISTRATOR" \
+    -d '{
+      "courseId": 1, 
+      "courseName": "UPDATED", 
+      "courseDescription": "UPDATED", 
+      "grade": "8",
+      "academicYear": "2020",
+      "teachers": [
+        {
+          "id": 2 
+        }
+      ],
+      "students": [
+        {
+          "id": 2
+        }
+      ]
+    }' | jq .
+
+  echo
+}
 
 #addition context and tags removed from note id = 2;
 

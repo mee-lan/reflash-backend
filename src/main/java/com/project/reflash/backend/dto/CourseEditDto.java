@@ -12,6 +12,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class CourseEditDto {
+    private Integer courseId;
     private String courseName;
     private String courseDescription;
     private String grade;
@@ -20,6 +21,7 @@ public class CourseEditDto {
     private List<StudentDto> students;
 
     public CourseEditDto(Course course ) {
+        this.courseId = course.getId();
         this.courseName = course.getName();
         this.courseDescription = course.getDescription();
         this.grade = course.getGrade();
