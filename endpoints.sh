@@ -74,6 +74,32 @@ create_note() {
   echo
 }
 
+create_notes() {
+  echo "Creating multiple notes..."
+
+  curl -X POST "$BASE_URL/api/teacher/notes" \
+    -u "$TCHR:$PASS" \
+    -H "Content-Type: application/json" \
+    -H "role:TEACHER" \
+    -d '[
+      {
+        "deckId": 1,
+        "front": "What is new card 1?",
+        "back": "Process by which plants make food using sunlight",
+        "additionalContext": "Occurs in chloroplasts"
+      },
+      {
+        "deckId": 1,
+        "front": "What is ATP?",
+        "back": "Energy currency of the new card 2",
+        "additionalContext": "Produced in mitochondria",
+        "tags": ["biology", "cell"]
+      }
+    ]' | jq .
+
+  echo
+}
+
 get_all_teachers() {
     echo "Getting all teachers..."
     curl -X GET "$BASE_URL/api/teacher/all" -u $ADMN:$PASS -H "role:ADMINISTRATOR" | jq .

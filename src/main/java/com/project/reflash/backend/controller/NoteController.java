@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @Slf4j
 @RequestMapping("/api")
@@ -25,5 +27,12 @@ public class NoteController {
     public ResponseEntity<ApiResponse> createNote(@RequestBody NoteCreationDto noteCreationDto) {
         noteService.createNote(noteCreationDto);
         return new ResponseEntity<ApiResponse>(new ApiResponse("Note Created Successfully"), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('TEACHER')")
+    @PostMapping("/teacher/notes")
+    public ResponseEntity<ApiResponse> createNotes(@RequestBody List<NoteCreationDto> noteCreationDtos) {
+        noteService.createNotes(noteCreationDtos);
+        return new ResponseEntity<ApiResponse>(new ApiResponse("Notes Created Successfully"), HttpStatus.OK);
     }
 }

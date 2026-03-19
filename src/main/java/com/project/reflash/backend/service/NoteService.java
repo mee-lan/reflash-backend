@@ -8,6 +8,7 @@ import com.project.reflash.backend.repository.NoteRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class NoteService {
@@ -20,10 +21,20 @@ public class NoteService {
     }
 
     public void createNote(NoteCreationDto noteCreationDto) {
+
+        Note note = getNoteFromDto(noteCreationDto);
+        noteRepository.save(note);
+    }
+
+    public void createNotes(List<NoteCreationDto> noteCreationDtos) {
+        List<Note> notes = noteCreationDtos.stream().map(this::getNoteFromDto).toList();
+        noteRepository.saveAll(notes);
+    }
+
+    private Note getNoteFromDto(NoteCreationDto noteCreationDto) {
         //TODO: verify this method properly
         Deck deck = deckRepository.findById(noteCreationDto.getDeckId())
                 .orElseThrow(() -> new RuntimeException("Deck not found with id: " + noteCreationDto.getDeckId()));
-
         Note note = new Note();
 
         note.setFront(noteCreationDto.getFront());
@@ -31,6 +42,7 @@ public class NoteService {
         note.setDeck(deck);
         note.setAdditionalContext(noteCreationDto.getAdditionalContext());
         note.setTags(noteCreationDto.getTags() != null ? noteCreationDto.getTags() : new ArrayList<>());
-        noteRepository.save(note);
+
+        return note;
     }
 }
