@@ -46,7 +46,7 @@ create_empty_deck() {
   curl -X POST "$BASE_URL/api/teacher/empty-deck" \
     -u "$TCHR:$PASS" \
     -H "Content-Type: application/json" \
-    -H "role: TEACHER" \
+    -H "role:TEACHER" \
     -d '{
       "deckName": "New Deck",
       "deckDescription": "New Deck Description",
@@ -56,6 +56,23 @@ create_empty_deck() {
   echo
 }
 
+create_note() {
+  echo "Creating note..."
+
+  curl -X POST "$BASE_URL/api/teacher/note" \
+    -u "$TCHR:$PASS" \
+    -H "Content-Type: application/json" \
+    -H "role:TEACHER" \
+    -d '{
+      "deckId": 1,
+      "front": "What is this new card?",
+      "back": "Process by which plants make food using sunlight",
+      "additionalContext": "Occurs in chloroplasts",
+      "tags": ["biology", "plants"]
+    }' | jq .
+
+  echo
+}
 
 get_all_teachers() {
     echo "Getting all teachers..."

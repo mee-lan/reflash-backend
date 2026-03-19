@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @Slf4j
 @ControllerAdvice
 //TODO: handle all the exceptions here
+//TODO: handle the exception in which non-permissable role tries to access a role-protected route
 public class GlobalExceptionHandler {
     @ExceptionHandler(UserDoesNotExistException.class)
     public ResponseEntity<ApiResponse> handleUserDoesNotExist(UserDoesNotExistException ex) {
