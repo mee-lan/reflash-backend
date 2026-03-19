@@ -2,6 +2,7 @@ package com.project.reflash.backend.config;
 
 import com.project.reflash.backend.exception_handling.CustomAccessDeniedHandler;
 import com.project.reflash.backend.exception_handling.CustomBasicAuthenticationEntryPoint;
+import com.project.reflash.backend.service.AdministratorService;
 import com.project.reflash.backend.service.StudentService;
 import com.project.reflash.backend.service.TeacherService;
 import com.project.reflash.backend.service.security.DatabaseUserDetailsService;
@@ -32,6 +33,10 @@ public class SecurityConfiguration {
 
     @Autowired
     TeacherService teacherService;
+
+    @Autowired
+    AdministratorService administratorService;
+
     @Bean
     public SecurityFilterChain getSecurityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((config)-> {
@@ -90,6 +95,6 @@ public class SecurityConfiguration {
     }
     @Bean
     public UserDetailsService userDetailsService() {
-        return new DatabaseUserDetailsService(studentService, teacherService);
+        return new DatabaseUserDetailsService(studentService, teacherService, administratorService);
     }
 }

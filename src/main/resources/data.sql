@@ -13,6 +13,15 @@ VALUES (1, 'John', 'Doe', '{noop}password', '10', 'A', '1', '2026'),
 INSERT INTO teachers (firstname, lastname, username, password, email)
 VALUES ('First', 'Teacher', 'username', '{noop}password', 'username@pcampus.edu.np');
 
+
+
+-- =============================================
+-- Administrators
+-- =============================================
+INSERT INTO administrators (firstname, lastname, username, password, email)
+VALUES ('Arjun', 'Karki', 'username', '{noop}password', 'username@pcampus.edu.np');
+
+
 -- =============================================
 -- Courses
 -- =============================================
@@ -148,31 +157,31 @@ VALUES (1, 'algebra'),
 INSERT INTO flashcards (id, note_id, type, queue, ivl, factor, reps, lapses, left_count, due, student_id)
 VALUES
     -- Deck 1 – Algebra Basics (course 1)
-    (3, 3, 'LEARNING', 'LEARNING', 2500, 1, 0, 1, 0,
+    (3, 3, 'LEARNING', 'LEARNING',  1, 2500,  0, 1, 2,
      DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()) - 600 - 86400, 1),
     -- REVIEW: due 1 day before today relative to deck 1 creation
-    (4, 4, 'REVIEW', 'REVIEW', 2500, 3, 0, 0, 0,
+    (4, 4, 'REVIEW', 'REVIEW', 3,2500,  0, 0, 2,
      DATEDIFF(DAY, TIMESTAMP '2026-03-01 00:00:00', CURRENT_DATE()) - 1, 1),
 --
     -- Deck 2 – Chemistry Foundations (course 2)
-    (5, 5, 'LEARNING', 'LEARNING', 0 , 0, 0, 0, 0, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 2),
-    (6, 6, 'LEARNING', 'LEARNING', 0, 0, 0, 0, 0, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 2),
+    (5, 5, 'LEARNING', 'LEARNING', 0 , 0, 0, 0, 1, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 2),
+    (6, 6, 'LEARNING', 'LEARNING', 0, 0, 0, 0, 2, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 2),
     -- LEARNING: due 5 minutes ago
     (7, 7, 'LEARNING', 'LEARNING', 0, 2500, 1, 0, 1, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 2),
     -- REVIEW: due 1 day before today relative to deck 2 creation
-    (8, 8, 'REVIEW', 'REVIEW', 6, 2500, 4, 1, 0,
+    (8, 8, 'REVIEW', 'REVIEW', 6, 2500, 4, 1, 1,
      DATEDIFF(DAY, TIMESTAMP '2026-03-05 00:00:00', CURRENT_DATE()) - 1, 2),
 --
     -- Deck 3 – Geometry Essentials (course 1)
-    (9, 9, 'LEARNING', 'LEARNING', 0, 0, 0, 0, 0, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 3),
-    (10, 10, 'LEARNING', 'LEARNING', 0, 0, 0, 0, 0, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 3),
-    (11, 11, 'LEARNING', 'LEARNING', 0, 0, 0, 0, 0, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 3),
+    (9, 9, 'LEARNING', 'LEARNING', 0, 0, 0, 0, 1, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 3),
+    (10, 10, 'LEARNING', 'LEARNING', 0, 0, 0, 0, 2, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 3),
+    (11, 11, 'LEARNING', 'LEARNING', 0, 0, 0, 0, 2, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 3),
     -- RELEARNING: due 2 minutes ago
     (12, 12, 'RELEARNING', 'LEARNING', 1, 1800, 5, 2, 1,
      DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()) - 120, 3),
 
     -- Deck 4 – Physics Fundamentals (course 2)
-    (13, 13, 'LEARNING', 'LEARNING', 0, 0, 0, 0, 0, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 4),
-    (14, 14, 'LEARNING', 'LEARNING', 0, 0, 0, 0, 0, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 4),
-    (15, 15, 'LEARNING', 'LEARNING', 0, 0, 0, 0, 0, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 4),
-    (16, 16, 'LEARNING', 'LEARNING', 0, 0, 0, 0, 0, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 4);
+    (13, 13, 'LEARNING', 'LEARNING', 0, 0, 0, 0, 1, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 4),
+    (14, 14, 'LEARNING', 'LEARNING', 0, 0, 0, 0, 1, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 4),
+    (15, 15, 'LEARNING', 'LEARNING', 0, 0, 0, 0, 2, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 4),
+    (16, 16, 'LEARNING', 'LEARNING', 0, 0, 0, 0, 2, DATEDIFF(SECOND, TIMESTAMP '1970-01-01 00:00:00', NOW()), 4);

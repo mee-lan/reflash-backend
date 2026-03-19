@@ -12,6 +12,12 @@ login_student() {
   echo
 }
 
+login_administrator() {
+  echo "Calling student login..."
+  curl -X GET "$BASE_URL/login" -u $TCHR:$PASS -H "role:ADMINISTRATOR" | jq .
+  echo
+}
+
 login_student_failure() {
   echo "Calling student login..."
   curl -X GET "$BASE_URL/login" -u $STD:"random" -H "role:STUDENT" | jq .

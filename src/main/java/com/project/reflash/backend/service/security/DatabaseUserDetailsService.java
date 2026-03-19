@@ -1,10 +1,13 @@
 package com.project.reflash.backend.service.security;
 
+import com.project.reflash.backend.auth.user_details.AdministratorUserDetails;
 import com.project.reflash.backend.auth.user_details.StudentUserDetails;
 import com.project.reflash.backend.auth.user_details.TeacherUserDetails;
+import com.project.reflash.backend.dto.Administrator;
 import com.project.reflash.backend.entity.Student;
 import com.project.reflash.backend.entity.Teacher;
 import com.project.reflash.backend.exception.InvalidRoleException;
+import com.project.reflash.backend.service.AdministratorService;
 import com.project.reflash.backend.service.StudentService;
 import com.project.reflash.backend.service.TeacherService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,11 +22,13 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 public class DatabaseUserDetailsService implements UserDetailsService {
     private final StudentService studentService;
     private final TeacherService teacherService;
+    private final AdministratorService administratorService;
     private UserDetails userDetails;
 
-    public DatabaseUserDetailsService(StudentService studentService, TeacherService teacherService) {
+    public DatabaseUserDetailsService(StudentService studentService, TeacherService teacherService, AdministratorService administratorService) {
         this.studentService = studentService;
         this.teacherService = teacherService;
+        this.administratorService = administratorService;
     }
 
     @Override
@@ -42,6 +47,11 @@ public class DatabaseUserDetailsService implements UserDetailsService {
             Teacher teacher = teacherService.loadTeacher(username);
             userDetails = new TeacherUserDetails(teacher.getId(), teacher.getFirstName(), teacher.getLastName(),
                     teacher.getUsername(), teacher.getPassword(), teacher.getEmail());
+        } else if (role.trim().equalsIgnoreCase("ADMINISTRATOR")) {
+            Administrator administrator = administratorService.loadAdministrator(username);
+            userDetails = new AdministratorUserDetails(administrator.getId(), administrator.getFirstName(),
+                    administrator.getLastName(),
+                    administrator.getUsername(), administrator.getPassword(), administrator.getEmail());
         } else {
             throw new InvalidRoleException();
         }

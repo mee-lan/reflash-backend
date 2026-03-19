@@ -1,6 +1,8 @@
 package com.project.reflash.backend.controller;
 
+import com.project.reflash.backend.auth.user_details.AdministratorUserDetails;
 import com.project.reflash.backend.auth.user_details.TeacherUserDetails;
+import com.project.reflash.backend.dto.AdministratorDto;
 import com.project.reflash.backend.dto.StudentDto;
 import com.project.reflash.backend.dto.TeacherDto;
 import com.project.reflash.backend.entity.Student;
@@ -29,6 +31,9 @@ public class LoginLogoutController {
         if(authentication.getPrincipal() instanceof TeacherUserDetails teacherUserDetails) {
             TeacherDto teacher = new TeacherDto(teacherUserDetails);
             return new ResponseEntity<ApiResponse>(new ApiResponse(ResponseMessage.LOGIN_SUCCESSFUL, teacher), HttpStatus.OK);
+        } else if(authentication.getPrincipal() instanceof AdministratorUserDetails administratorUserDetails) {
+            AdministratorDto administrator = new AdministratorDto(administratorUserDetails);
+            return new ResponseEntity<ApiResponse>(new ApiResponse(ResponseMessage.LOGIN_SUCCESSFUL, administrator), HttpStatus.OK);
         }
 
         StudentUserDetails studentUserdetails = (StudentUserDetails) authentication.getPrincipal();
