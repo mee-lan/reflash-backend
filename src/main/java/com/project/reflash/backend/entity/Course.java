@@ -17,7 +17,7 @@ public class Course {
     private Integer id;
 
     @Column(name="name", nullable = false)
-    String courseName;
+    String name;
 
     @Column(name="description", nullable = false)
     String description;

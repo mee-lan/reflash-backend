@@ -3,6 +3,7 @@ package com.project.reflash.backend.controller;
 
 import com.project.reflash.backend.auth.user_details.StudentUserDetails;
 import com.project.reflash.backend.auth.user_details.TeacherUserDetails;
+import com.project.reflash.backend.dto.CourseCreationDto;
 import com.project.reflash.backend.dto.CourseStudentDto;
 import com.project.reflash.backend.dto.CourseTeacherDto;
 import com.project.reflash.backend.response.ApiResponse;
@@ -13,9 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -37,6 +36,13 @@ public class CourseController {
         return new ResponseEntity<ApiResponse>(new ApiResponse(courses), HttpStatus.OK);
     }
 
+
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @PostMapping("/admin/course")
+    public ResponseEntity<ApiResponse> getCoursesOfStudent(@RequestBody CourseCreationDto courseCreationDto) {
+        courseService.createCourse(courseCreationDto);
+        return new ResponseEntity<ApiResponse>(new ApiResponse("Course Created Successfully"), HttpStatus.OK);
+    }
 
     @PreAuthorize("hasRole('TEACHER')")
     @GetMapping("/teacher/courses")

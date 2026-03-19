@@ -19,6 +19,28 @@ login_administrator() {
   echo
 }
 
+
+
+create_course() {
+  echo "Creating course..."
+
+  curl -X POST "$BASE_URL/api/admin/course" \
+    -u "$ADMN:$PASS" \
+    -H "Content-Type: application/json" \
+    -H "role: ADMINISTRATOR" \
+    -d '{
+      "courseName": "New Course",
+      "courseDescription": "New Course Updated",
+      "grade": "10",
+      "academicYear": "2025",
+      "teachers": [1, 2],
+      "students": [1, 2, 3]
+    }' | jq .
+
+  echo
+}
+
+
 get_all_teachers() {
     echo "Getting all teachers..."
     curl -X GET "$BASE_URL/api/teacher/all" -u $ADMN:$PASS -H "role:ADMINISTRATOR" | jq .

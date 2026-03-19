@@ -17,7 +17,7 @@ public class CourseStudentDto {
 
     public CourseStudentDto(Course course) {
         this.courseId = course.getId();
-        this.courseName = course.getCourseName();
+        this.courseName = course.getName();
         this.courseDescription = course.getDescription();
     }
 

@@ -18,7 +18,7 @@ public class DeckDto {
     public DeckDto(Deck deck, List<FlashcardDto> flashcards) {
         this.deckId = deck.getId();
         this.deckName = deck.getName();
-        this.courseName = deck.getCourse().getCourseName();
+        this.courseName = deck.getCourse().getName();
         this.flashcards = flashcards;
         this.crt = deck.getCrt();
     }
