@@ -1,18 +1,14 @@
 package com.project.reflash.backend.controller;
 
+import com.project.reflash.backend.dto.StudentCreationDto;
 import com.project.reflash.backend.dto.StudentDto;
-import com.project.reflash.backend.dto.TeacherDto;
-import com.project.reflash.backend.entity.Student;
 import com.project.reflash.backend.response.ApiResponse;
 import com.project.reflash.backend.service.StudentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,9 +22,16 @@ public class StudentController {
     }
 
     @PreAuthorize("hasRole('ADMINISTRATOR')")
-    @GetMapping("/student/by-grade")
+    @GetMapping("/admin/students-by-grade")
     public ResponseEntity<ApiResponse> getAllStudentsByGrade(@RequestParam("grade") String grade) {
         List<StudentDto> students = studentService.getAllStudentsByGrade(grade);
         return new ResponseEntity<ApiResponse>(new ApiResponse(students), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @PostMapping("/admin/student-profile")
+    public ResponseEntity<ApiResponse> createStudentProfile(@RequestBody StudentCreationDto studentCreationDto) {
+        studentService.createStudentProfile(studentCreationDto);
+        return new ResponseEntity<ApiResponse>(new ApiResponse("Student profile created successfully"), HttpStatus.OK);
     }
 }

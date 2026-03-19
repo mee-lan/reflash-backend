@@ -100,7 +100,7 @@ public class DatabaseUserDetailsService implements UserDetailsService {
             throw new UserDoesNotExistException(ExceptionMessage.INVALID_USERNAME);
         }
 
-        Optional<Student> student = studentRepository.findByGradeSectionRollAndYear(year, grade, section, roll);
+        Optional<Student> student = studentRepository.findByYearGradeSectionAndRoll(year, grade, section, roll);
 
         if (student.isPresent()) {
             return student.get();

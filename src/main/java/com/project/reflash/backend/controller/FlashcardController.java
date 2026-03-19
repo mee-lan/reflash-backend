@@ -29,7 +29,7 @@ public class FlashcardController {
     public ResponseEntity<ApiResponse> getDeckForStudent(
             @AuthenticationPrincipal StudentUserDetails student,
             @RequestParam Integer deckId) {
-        DeckDto deck = flashcardService.getDeckStudent(deckId, student.getId(), "STUDENT");
+        DeckDto deck = flashcardService.getDeckStudent(deckId, student.getId());
         return new ResponseEntity<>(new ApiResponse(deck), HttpStatus.OK);
     }
 

@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ApiResponse> handleRuntimeException(UserDoesNotExistException ex) {
+    public ResponseEntity<ApiResponse> handleRuntimeException(RuntimeException ex) {
         log.error("Exception handled: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(ex.getMessage()));
     }

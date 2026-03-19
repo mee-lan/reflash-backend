@@ -48,7 +48,7 @@ public class FlashcardService {
      */
 
 
-    public DeckDto getDeckStudent(Integer deckId, Integer userId, String role) {
+    public DeckDto getDeckStudent(Integer deckId, Integer userId) {
         //check if the deck is accessible to the user
         Deck deck = deckRepository.getDeckByIdIfAccessibleByStudent(deckId, userId)
                 .orElseThrow(() -> new RuntimeException("Deck not found: " + deckId));

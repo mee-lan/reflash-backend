@@ -2,9 +2,9 @@ package com.project.reflash.backend.config;
 
 import com.project.reflash.backend.exception_handling.CustomAccessDeniedHandler;
 import com.project.reflash.backend.exception_handling.CustomBasicAuthenticationEntryPoint;
-import com.project.reflash.backend.service.AdministratorService;
-import com.project.reflash.backend.service.StudentService;
-import com.project.reflash.backend.service.TeacherService;
+import com.project.reflash.backend.repository.AdministratorRepository;
+import com.project.reflash.backend.repository.StudentRepository;
+import com.project.reflash.backend.repository.TeacherRepository;
 import com.project.reflash.backend.service.security.DatabaseUserDetailsService;
 import com.project.reflash.backend.utils.GlobalConstants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +16,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.context.DelegatingSecurityContextRepository;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
@@ -29,13 +31,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class SecurityConfiguration {
 
     @Autowired
-    StudentService studentService;
+    StudentRepository studentRepository;
 
     @Autowired
-    TeacherService teacherService;
+    TeacherRepository teacherRepository;
 
     @Autowired
-    AdministratorService administratorService;
+    AdministratorRepository administratorRepository;
 
     @Bean
     public SecurityFilterChain getSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -95,6 +97,11 @@ public class SecurityConfiguration {
     }
     @Bean
     public UserDetailsService userDetailsService() {
-        return new DatabaseUserDetailsService(studentService, teacherService, administratorService);
+        return new DatabaseUserDetailsService(studentRepository, teacherRepository, administratorRepository);
+    }
+
+    @Bean
+    public PasswordEncoder getPasswordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 }

@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface StudentRepository extends JpaRepository<Student, Integer> {
         @Query("SELECT s FROM Student s " +
                 "WHERE s.grade = :grade AND s.section = :section AND s.roll = :roll AND s.academicYear = :year")
-        Optional<Student> findByGradeSectionRollAndYear(
+        Optional<Student> findByYearGradeSectionAndRoll(
                 @Param("year") String year,
                 @Param("grade") String grade,
                 @Param("section") String section,
@@ -22,4 +22,5 @@ public interface StudentRepository extends JpaRepository<Student, Integer> {
 
         @Query("Select s from Student s where s.grade= :grade")
         List<Student> getAllStudentsByGrade(@Param("grade") String grade);
+
 }

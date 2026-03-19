@@ -19,6 +19,26 @@ login_administrator() {
   echo
 }
 
+create_student_profile() {
+  echo "Creating student profile..."
+
+  curl -X POST "$BASE_URL/api/admin/student-profile" \
+    -u "$ADMN:$PASS" \
+    -H "Content-Type: application/json" \
+    -H "role: ADMINISTRATOR" \
+    -d '{
+      "firstName": "New",
+      "lastName": "Student",
+      "roll": "12",
+      "password": "password",
+      "grade": "10",
+      "section": "A",
+      "academicYear": "2025"
+    }' | jq .
+
+  echo
+}
+
 
 
 create_course() {
@@ -102,13 +122,13 @@ create_notes() {
 
 get_all_teachers() {
     echo "Getting all teachers..."
-    curl -X GET "$BASE_URL/api/teacher/all" -u $ADMN:$PASS -H "role:ADMINISTRATOR" | jq .
+    curl -X GET "$BASE_URL/api/admin/teachers" -u $ADMN:$PASS -H "role:ADMINISTRATOR" | jq .
     echo
 }
 
 get_students_by_grade() {
     echo "Getting students by grade..."
-    curl -X GET "$BASE_URL/api/student/by-grade?grade=10" -u $ADMN:$PASS -H "role:ADMINISTRATOR" | jq .
+    curl -X GET "$BASE_URL/api/admin/students-by-grade?grade=10" -u $ADMN:$PASS -H "role:ADMINISTRATOR" | jq .
     echo
 }
 

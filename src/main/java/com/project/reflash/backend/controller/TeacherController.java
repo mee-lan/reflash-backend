@@ -26,7 +26,7 @@ public class TeacherController {
     }
 
     @PreAuthorize("hasRole('ADMINISTRATOR')")
-    @GetMapping("/teacher/all")
+    @GetMapping("/admin/teachers")
     public ResponseEntity<ApiResponse> getAllTeachers() {
         List<TeacherDto> teachers = teacherService.getAllTeachers();
         return new ResponseEntity<ApiResponse>(new ApiResponse(teachers), HttpStatus.OK);
