@@ -16,23 +16,41 @@ public interface FlashcardRepository extends JpaRepository<Flashcard, Integer> {
     // ── Student-scoped queries ──────────────────────────────────────────────
 
     /*
-    sql query:
+    NOTE: we need to get all the notes from a particular deck that don't have a flashcard for a particular stuent
 
-    select notes.* from notes join decks ON notes.deck_id = decks.id left join flashcards ON flashcards.note_id = notes.id where decks.id = 1 AND flashcards.id is
-     null;
+     updated query:
+
+        SELECT n.*
+        FROM notes n
+        JOIN decks d
+          ON d.id = n.deck_id
+        WHERE d.id = 2
+          AND NOT EXISTS (
+            SELECT 1
+            FROM flashcards f
+            WHERE f.note_id = n.id
+              AND f.student_id = 1
+          );
 
      */
     @Query("""
                 SELECT n
                 FROM Note n
-                WHERE n.flashCards IS EMPTY
-                  AND n.deck.id = :deckId
+                JOIN n.deck d
+                WHERE d.id = :deckId
+                  AND NOT EXISTS (
+                      SELECT 1
+                      FROM Flashcard f
+                      WHERE f.note = n
+                        AND f.student.id = :studentId
+                  )
             """)
-    List<Note> getNewNotesForStudent(@Param("deckId") Integer deckId,
-                                     Pageable pageable);
+    List<Note> getOrphanNotes(@Param("deckId") Integer deckId,
+                              @Param("studentId") Integer studentId,
+                              Pageable pageable);
+
 
     /*
-
     sql query:
 
     select flashcards.*, notes.* from flashcards join notes ON flashcards.note_id = notes.id join decks ON notes.deck_id = decks.id WHERE decks.id = 1 AND (flashcards.type = 'LEARNING' OR flashcards.type = 'RELEARNING');
@@ -83,7 +101,6 @@ public interface FlashcardRepository extends JpaRepository<Flashcard, Integer> {
                                                 AND s.id = :studentId
             """)
     List<Flashcard> getReviewCardsForStudent(@Param("deckId") Integer deckId, @Param("today") Long today, @Param("studentId") Integer studentId);
-
 
 
     @Query("""

@@ -101,7 +101,7 @@ public class FlashcardService {
                 .orElseThrow(() -> new RuntimeException("Deck not found: " + deckId));
 
         //1. RETRIEVE NEW NOTES
-        List<Note> newNotes = flashcardRepository.getNewNotesForStudent(deckId, PageRequest.of(0, 20));
+        List<Note> newNotes = flashcardRepository.getOrphanNotes(deckId, userId,  PageRequest.of(0, 20));
 
         //2. create empty flashcards for the New Notes and convert to DTO
         List<Flashcard> newUnsavedCards = newNotes.stream().map(Flashcard::new).toList();
