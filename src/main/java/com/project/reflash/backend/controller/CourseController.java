@@ -61,6 +61,14 @@ public class CourseController {
 
 
     @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @GetMapping("/admin/all-course")
+    public ResponseEntity<ApiResponse> getAllCourses() {
+        List<CourseAdministratorDto> courses = courseService.getAllCourses();
+        return ResponseEntity.ok(new ApiResponse(courses));
+    }
+
+
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
     @PutMapping("/admin/edit-course")
     public ResponseEntity<ApiResponse> resaveCourseWithNewData(@RequestBody CourseEditDto courseEditDto) {
         courseService.resaveCourseWithNewData(courseEditDto);

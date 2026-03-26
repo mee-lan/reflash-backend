@@ -24,4 +24,7 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
 
     @Query("SELECT t from Course c JOIN c.teachers t WHERE c.id = :courseId AND t.id = :teacherId")
     public List<Teacher> getTeachersOfCourse(@Param("courseId") Integer courseId, @Param("teacherId") Integer teacherId);
+
+    @Query("Select c from Course c")
+    public List<Course> getAllCourses();
 }

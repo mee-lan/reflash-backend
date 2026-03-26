@@ -14,6 +14,15 @@ login_student() {
 
 }
 
+
+all_courses() {
+  echo "Getting all courses"
+  curl -X GET "$BASE_URL/api/admin/all-course" -u $ADMN:$PASS -H "role:ADMINISTRATOR" | jq .
+  echo
+
+}
+
+
 get_questions() {
   echo "Generating questions from decks 1,2,3,4 with count 5..."
 

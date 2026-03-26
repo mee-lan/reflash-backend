@@ -54,6 +54,8 @@ public class DeckService {
         return new DecksTeacherDto(decks, students, teachers);
     }
 
+//    public void combineDeck(List<Deck>)
+
 
     @PreAuthorize("hasRole('TEACHER')")
     private List<StudentDto> getStudentsOfCourse(Integer courseId, Integer userId) {

@@ -184,4 +184,8 @@ public class CourseService {
         }
     }
 
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    public List<CourseAdministratorDto> getAllCourses() {
+        return courseRepository.getAllCourses().stream().map(CourseAdministratorDto::new).toList();
+    }
 }
