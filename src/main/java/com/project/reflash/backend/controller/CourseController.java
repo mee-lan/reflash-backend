@@ -8,6 +8,7 @@ import com.project.reflash.backend.response.ApiResponse;
 import com.project.reflash.backend.service.CourseService;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -47,6 +48,24 @@ public class CourseController {
     public ResponseEntity<ApiResponse> getCoursesOfStudent(HttpSession session, @AuthenticationPrincipal TeacherUserDetails teacher) {
         List<CourseTeacherDto> courses = courseService.getCoursesOfTeacher(teacher.getId());
         return new ResponseEntity<ApiResponse>(new ApiResponse(courses), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('TEACHER')")
+    @GetMapping("/teacher/course/students")
+    public ResponseEntity<ApiResponse> getStudentsOfCourse(@Param("courseId") Integer courseId, @AuthenticationPrincipal TeacherUserDetails teacher) {
+        List<StudentDto> students = courseService.getStudentsOfCourse(courseId, teacher.getId());
+
+        return new ResponseEntity<ApiResponse>(new ApiResponse(students), HttpStatus.OK);
+    }
+
+
+
+    @PreAuthorize("hasRole('TEACHER')")
+    @GetMapping("/teacher/course/teachers")
+    public ResponseEntity<ApiResponse> getTeachersOfCourse(@Param("courseId") Integer courseId, @AuthenticationPrincipal TeacherUserDetails teacher) {
+        List<TeacherDto> teachers = courseService.getTeachersOfCourse(courseId, teacher.getId());
+
+        return new ResponseEntity<ApiResponse>(new ApiResponse(teachers), HttpStatus.OK);
     }
 
 

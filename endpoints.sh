@@ -25,6 +25,25 @@ get_questions() {
 }
 
 
+get_course_students() {
+  echo "Getting students for course 1..."
+
+  curl -X GET "$BASE_URL/api/teacher/course/students?courseId=1" \
+    -u "$TCHR:$PASS" \
+    -H "role: TEACHER" | jq .
+  echo
+}
+
+get_course_teachers() {
+  echo "Getting teachers for course 1..."
+
+  curl -X GET "$BASE_URL/api/teacher/course/teachers?courseId=1" \
+    -u "$TCHR:$PASS" \
+    -H "role: TEACHER" | jq .
+  echo
+}
+
+
 get_course_for_edit() {
   echo "Fetching deck for edit..."
 
