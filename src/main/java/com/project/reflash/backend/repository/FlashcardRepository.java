@@ -64,10 +64,9 @@ public interface FlashcardRepository extends JpaRepository<Flashcard, Integer> {
                                     join f.student s
                             WHERE d.id = :deckId
                                 AND (f.type = 'LEARNING' OR f.type='RELEARNING')
-                                    AND f.due < :currentTimeSeconds
                                                 AND s.id = :studentId
             """)
-    List<Flashcard> getLearningRelearingCardsForStudent(@Param("deckId") Integer deckId, @Param("currentTimeSeconds") Long currentTimeSeconds, @Param("studentId") Integer studentId);
+    List<Flashcard> getLearningRelearingCardsForStudent(@Param("deckId") Integer deckId,  @Param("studentId") Integer studentId);
 
     @Query("""
                  select f
@@ -100,7 +99,20 @@ public interface FlashcardRepository extends JpaRepository<Flashcard, Integer> {
                                     AND f.due < :today
                                                 AND s.id = :studentId
             """)
-    List<Flashcard> getReviewCardsForStudent(@Param("deckId") Integer deckId, @Param("today") Long today, @Param("studentId") Integer studentId);
+    List<Flashcard> getReviewCardsForStudentDueDateExpired(@Param("deckId") Integer deckId, @Param("today") Long today, @Param("studentId") Integer studentId);
+
+
+    @Query("""
+                 select f
+                  from Flashcard f
+                    join f.note n
+                        join n.deck d
+                                    join f.student s
+                            WHERE d.id = :deckId
+                                AND f.type = 'REVIEW'
+                                                AND s.id = :studentId
+            """)
+    List<Flashcard> getReviewCardsForStudent(@Param("deckId") Integer deckId,@Param("studentId") Integer studentId);
 
 
     @Query("""

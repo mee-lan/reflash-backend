@@ -95,7 +95,7 @@ public class FlashcardService {
         return all of these
      */
 
-    public FlashcardsCollectionDto getDeckStudent(Integer deckId, Integer userId) {
+    public FlashcardsCollectionDto getDeckStudent(Integer deckId, Integer userId, boolean expiredDueDate) {
         //check if the deck is accessible to the user
         Deck deck = deckRepository.getDeckByIdIfAccessibleByStudent(deckId, userId)
                 .orElseThrow(() -> new RuntimeException("Deck not found: " + deckId));
@@ -121,10 +121,8 @@ public class FlashcardService {
 
 
         //5. RETRIEVE LEARNING AND RELEARNING CARDS
-        long currentTimeSeconds = Instant.now().getEpochSecond(); // UTC epoch seconds
 
-        List<Flashcard> learningRelearningCards = flashcardRepository.getLearningRelearingCardsForStudent(deckId,
-                currentTimeSeconds, userId);
+        List<Flashcard> learningRelearningCards = flashcardRepository.getLearningRelearingCardsForStudent(deckId, userId);
         allCards.addAll(learningRelearningCards.stream().map(FlashcardDto::new).toList());
 
 
@@ -132,13 +130,18 @@ public class FlashcardService {
         long deckCrtSeconds = deck.getCrt();
 
         //TODO: shouldn't today be calculated based on NPT or timezone of the user?
-        long todaySeconds = LocalDate.now()
-                .atStartOfDay(ZoneId.of("UTC"))
-                .toEpochSecond();
-        long today = (todaySeconds - deckCrtSeconds) / 86400L;
+	List<Flashcard> reviewCards = null;
+	if(expiredDueDate) {
+		long todaySeconds = LocalDate.now()
+			.atStartOfDay(ZoneId.of("UTC"))
+			.toEpochSecond();
+		long today = (todaySeconds - deckCrtSeconds) / 86400L;
 
-        List<Flashcard> reviewCards = flashcardRepository.getReviewCardsForStudent(deckId,
-                today, userId);
+		reviewCards = flashcardRepository.getReviewCardsForStudentDueDateExpired(deckId,
+			today, userId);
+	} else {
+		reviewCards = flashcardRepository.getReviewCardsForStudent(deckId, userId);
+	}
         allCards.addAll(reviewCards.stream().map(FlashcardDto::new).toList());
 
         return new FlashcardsCollectionDto(deck, allCards);

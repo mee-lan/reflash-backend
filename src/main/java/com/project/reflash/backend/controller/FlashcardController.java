@@ -26,10 +26,20 @@ public class FlashcardController {
 
     @PreAuthorize("hasRole('STUDENT')")
     @GetMapping("/student/flashcards")
+    public ResponseEntity<ApiResponse> getDeckForStudentExpiredDueDate(
+            @AuthenticationPrincipal StudentUserDetails student,
+            @RequestParam Integer deckId) {
+        FlashcardsCollectionDto deck = flashcardService.getDeckStudent(deckId, student.getId(), true);
+        return new ResponseEntity<>(new ApiResponse(deck), HttpStatus.OK);
+    }
+
+
+    @PreAuthorize("hasRole('STUDENT')")
+    @GetMapping("/student/flashcards-no-due-date")
     public ResponseEntity<ApiResponse> getDeckForStudent(
             @AuthenticationPrincipal StudentUserDetails student,
             @RequestParam Integer deckId) {
-        FlashcardsCollectionDto deck = flashcardService.getDeckStudent(deckId, student.getId());
+        FlashcardsCollectionDto deck = flashcardService.getDeckStudent(deckId, student.getId(), false);
         return new ResponseEntity<>(new ApiResponse(deck), HttpStatus.OK);
     }
 
