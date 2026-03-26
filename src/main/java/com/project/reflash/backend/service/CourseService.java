@@ -184,13 +184,4 @@ public class CourseService {
         }
     }
 
-    @PreAuthorize("hasRole('TEACHER')")
-    public List<StudentDto> getStudentsOfCourse(Integer courseId, Integer userId) {
-        return courseRepository.getStudentsOfCourse(courseId, userId).stream().map(StudentDto::new).toList();
-    }
-
-    @PreAuthorize("hasRole('TEACHER')")
-    public List<TeacherDto> getTeachersOfCourse(Integer courseId, Integer userId) {
-        return courseRepository.getTeachersOfCourse(courseId, userId).stream().map(TeacherDto::new).toList();
-    }
 }

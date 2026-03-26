@@ -38,14 +38,34 @@ public class DeckService {
     }
 
 
-    public List<DeckTeacherDto> getDecksOfTeacher(Integer teacherId, Integer courseId) {
+    @PreAuthorize("hasRole('TEACHER')")
+    public DecksTeacherDto getDecksOfTeacher(Integer teacherId, Integer courseId) {
         //TODO: check whether the course is accessible to this particular teacherId
-        return deckRepository.getDecksOfTeacher(teacherId, courseId).stream().map(
+        List<DeckTeacherDto> decks = deckRepository.getDecksOfTeacher(teacherId, courseId).stream().map(
                 deck -> {
                     Integer cardCount = deck.getNotes() != null ? deck.getNotes().size() : 0;
                     return new DeckTeacherDto(deck, cardCount);
                 }
         ).toList();
+
+        List<StudentDto> students = getStudentsOfCourse(courseId, teacherId);
+        List<TeacherDto> teachers = getTeachersOfCourse(courseId, teacherId);
+
+        return new DecksTeacherDto(decks, students, teachers);
+    }
+
+
+    @PreAuthorize("hasRole('TEACHER')")
+    private List<StudentDto> getStudentsOfCourse(Integer courseId, Integer userId) {
+        return courseRepository.getStudentsOfCourse(courseId, userId).stream().map(StudentDto::new).toList();
+    }
+
+
+    @PreAuthorize("hasRole('TEACHER')")
+    private List<TeacherDto> getTeachersOfCourse(Integer courseId, Integer userId) {
+        //TODO: if the teacherId does not have access to the course, it returns an empty list instead of throwing an error
+        //check from the courseRepository if the courseiId is accessible to the teacher
+        return courseRepository.getTeachersOfCourse(courseId, userId).stream().map(TeacherDto::new).toList();
     }
 
     public void createDeck(DeckCreationDto deckCreationDto) {

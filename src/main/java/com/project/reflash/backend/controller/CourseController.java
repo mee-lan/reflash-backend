@@ -50,23 +50,6 @@ public class CourseController {
         return new ResponseEntity<ApiResponse>(new ApiResponse(courses), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('TEACHER')")
-    @GetMapping("/teacher/course/students")
-    public ResponseEntity<ApiResponse> getStudentsOfCourse(@Param("courseId") Integer courseId, @AuthenticationPrincipal TeacherUserDetails teacher) {
-        List<StudentDto> students = courseService.getStudentsOfCourse(courseId, teacher.getId());
-
-        return new ResponseEntity<ApiResponse>(new ApiResponse(students), HttpStatus.OK);
-    }
-
-
-
-    @PreAuthorize("hasRole('TEACHER')")
-    @GetMapping("/teacher/course/teachers")
-    public ResponseEntity<ApiResponse> getTeachersOfCourse(@Param("courseId") Integer courseId, @AuthenticationPrincipal TeacherUserDetails teacher) {
-        List<TeacherDto> teachers = courseService.getTeachersOfCourse(courseId, teacher.getId());
-
-        return new ResponseEntity<ApiResponse>(new ApiResponse(teachers), HttpStatus.OK);
-    }
 
 
     @PreAuthorize("hasRole('ADMINISTRATOR')")

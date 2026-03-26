@@ -37,8 +37,8 @@ public class DeckController {
 
     @PreAuthorize("hasRole('TEACHER')")
     @GetMapping("/teacher/decks")
-    public ResponseEntity<ApiResponse> getTeacherCourses(@AuthenticationPrincipal TeacherUserDetails teacher, @RequestParam Integer courseId) {
-        List<DeckTeacherDto> decks = deckService.getDecksOfTeacher(teacher.getId(), courseId);
+    public ResponseEntity<ApiResponse> getTeacherDecks(@AuthenticationPrincipal TeacherUserDetails teacher, @RequestParam Integer courseId) {
+        DecksTeacherDto decks = deckService.getDecksOfTeacher(teacher.getId(), courseId);
         return new ResponseEntity<ApiResponse>(new ApiResponse(decks), HttpStatus.OK);
     }
 
