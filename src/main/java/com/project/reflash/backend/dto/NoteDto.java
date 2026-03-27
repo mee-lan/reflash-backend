@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Getter
@@ -17,6 +20,11 @@ public class NoteDto {
     private String additionalContext;
     private List<String> tags;
     private Long crt;
+    private String crtFormatted;
+
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter
+            .ofPattern("yyyy-MM-dd HH:mm:ss")
+            .withZone(ZoneId.of("Asia/Kathmandu"));
 
     public NoteDto(Note note) {
         this.noteId = note.getId();
@@ -25,5 +33,6 @@ public class NoteDto {
         this.additionalContext = note.getAdditionalContext();
         this.tags = note.getTags();
         this.crt = note.getCrt();
+        this.crtFormatted = FORMATTER.format(Instant.ofEpochSecond(note.getCrt()));
     }
 }

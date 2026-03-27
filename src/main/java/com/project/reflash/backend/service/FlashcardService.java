@@ -100,6 +100,8 @@ public class FlashcardService {
         Deck deck = deckRepository.getDeckByIdIfAccessibleByStudent(deckId, userId)
                 .orElseThrow(() -> new RuntimeException("Deck not found: " + deckId));
 
+        long deckCrt = deck.getCrt();
+
         //1. RETRIEVE NEW NOTES
         List<Note> newNotes = flashcardRepository.getOrphanNotes(deckId, userId,  PageRequest.of(0, 20));
 
@@ -117,17 +119,16 @@ public class FlashcardService {
 
         //4. load the 'NEW' flashcards
         List<Flashcard> newCards = flashcardRepository.getNewCardsForStudent(deck.getId(), userId);
-        List<FlashcardDto> allCards = new ArrayList<>(newCards.stream().map(FlashcardDto::new).toList());
+        List<FlashcardDto> allCards = new ArrayList<>(newCards.stream().map(f -> new FlashcardDto(f, deckCrt)).toList());
 
 
         //5. RETRIEVE LEARNING AND RELEARNING CARDS
 
         List<Flashcard> learningRelearningCards = flashcardRepository.getLearningRelearingCardsForStudent(deckId, userId);
-        allCards.addAll(learningRelearningCards.stream().map(FlashcardDto::new).toList());
+        allCards.addAll(learningRelearningCards.stream().map(f -> new FlashcardDto(f, deckCrt)).toList());
 
 
         //6. RETRIEVE REVIEW CARDS
-        long deckCrtSeconds = deck.getCrt();
 
         //TODO: shouldn't today be calculated based on NPT or timezone of the user?
 	List<Flashcard> reviewCards = null;
@@ -135,14 +136,14 @@ public class FlashcardService {
 		long todaySeconds = LocalDate.now()
 			.atStartOfDay(ZoneId.of("UTC"))
 			.toEpochSecond();
-		long today = (todaySeconds - deckCrtSeconds) / 86400L;
+		long today = (todaySeconds - deckCrt) / 86400L;
 
 		reviewCards = flashcardRepository.getReviewCardsForStudentDueDateExpired(deckId,
 			today, userId);
 	} else {
 		reviewCards = flashcardRepository.getReviewCardsForStudent(deckId, userId);
 	}
-        allCards.addAll(reviewCards.stream().map(FlashcardDto::new).toList());
+        allCards.addAll(reviewCards.stream().map(f -> new FlashcardDto(f, deckCrt)).toList());
 
         return new FlashcardsCollectionDto(deck, allCards);
     }

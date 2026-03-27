@@ -23,9 +23,9 @@ all_courses() {
 }
 
 
-get_deck_notes() {
-  echo "Getting all notes to browser for a deck with id 1 for student"
-  curl -X GET "$BASE_URL/api/student/deck-notes?deckId=1" -u $STD:$PASS -H "role:STUDENT" | jq .
+get_flashcards_of_deck() {
+  echo "Getting all flashcards for deck with id 1 for student"
+  curl -X GET "$BASE_URL/api/student/flashcards-no-due-date?deckId=1" -u $STD:$PASS -H "role:STUDENT" | jq .
   echo
 }
 
