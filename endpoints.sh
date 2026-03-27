@@ -23,6 +23,13 @@ all_courses() {
 }
 
 
+reset_deck() {
+  echo "Resetting deck with id 1 for student"
+  curl -X POST "$BASE_URL/api/student/reset-deck?deckId=1" -u $STD:$PASS -H "role:STUDENT" | jq .
+  echo
+}
+
+
 global_search_student() {
   echo "Searching for A"
   curl -X GET "$BASE_URL/api/student/global-search?input=what+is" -u $STD:$PASS -H "role:STUDENT" | jq .

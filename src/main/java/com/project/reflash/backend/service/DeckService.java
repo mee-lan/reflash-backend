@@ -1,11 +1,15 @@
 package com.project.reflash.backend.service;
 
+import com.project.reflash.backend.algorithm.CardQueue;
+import com.project.reflash.backend.algorithm.CardType;
 import com.project.reflash.backend.dto.*;
 import com.project.reflash.backend.entity.Course;
 import com.project.reflash.backend.entity.Deck;
+import com.project.reflash.backend.entity.Flashcard;
 import com.project.reflash.backend.entity.Note;
 import com.project.reflash.backend.repository.CourseRepository;
 import com.project.reflash.backend.repository.DeckRepository;
+import com.project.reflash.backend.repository.FlashcardRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,10 +27,12 @@ public class DeckService {
 
     DeckRepository deckRepository;
     CourseRepository courseRepository;
+    FlashcardRepository flashcardRepository;
 
-    public DeckService(DeckRepository deckRepository, CourseRepository courseRepository) {
+    public DeckService(DeckRepository deckRepository, CourseRepository courseRepository, FlashcardRepository flashcardRepository) {
         this.deckRepository = deckRepository;
         this.courseRepository = courseRepository;
+        this.flashcardRepository = flashcardRepository;
     }
 
     public List<DeckStudentDto> getDecksofStudent(Integer studentId, Integer courseId) {
@@ -138,5 +144,23 @@ public class DeckService {
         note.setBack(dto.getBack());
         note.setAdditionalContext(dto.getAdditionalContext());
         note.setTags(dto.getTags() != null ? dto.getTags() : new ArrayList<>());
+    }
+
+    @Transactional
+    public void resetDeck(Integer deckId, Integer studentId) {
+        List<Flashcard> flashcards = flashcardRepository.getAllCardsForDeckAndStudent(deckId, studentId);
+
+        for (Flashcard flashcard : flashcards) {
+            flashcard.setType(CardType.NEW);
+            flashcard.setQueue(CardQueue.NEW);
+            flashcard.setIvl(0);
+            flashcard.setFactor(0);
+            flashcard.setReps(0);
+            flashcard.setLapses(0);
+            flashcard.setLeft(0);
+            flashcard.setDue(flashcard.getNote().getCrt());
+        }
+
+        flashcardRepository.saveAll(flashcards);
     }
 }

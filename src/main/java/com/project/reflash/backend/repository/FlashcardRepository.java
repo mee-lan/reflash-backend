@@ -125,4 +125,14 @@ public interface FlashcardRepository extends JpaRepository<Flashcard, Integer> {
                   AND f.student.id = :studentId
             """)
     List<Flashcard> getCardsByIdsOfADeck(@Param("flashcardIds") List<Integer> flashcardIds, @Param("deckId") Integer deckId, @Param("studentId") Integer studentId);
+
+    @Query("""
+                select f
+                from Flashcard f
+                    join f.note n
+                    join n.deck d
+                WHERE d.id = :deckId
+                  AND f.student.id = :studentId
+            """)
+    List<Flashcard> getAllCardsForDeckAndStudent(@Param("deckId") Integer deckId, @Param("studentId") Integer studentId);
 }

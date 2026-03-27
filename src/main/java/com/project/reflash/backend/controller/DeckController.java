@@ -64,4 +64,11 @@ public class DeckController {
         deckService.resaveDeckWithNewData(deckEditDto, teacher.getId());
         return ResponseEntity.ok(new ApiResponse("Edit Successful"));
     }
+
+    @PreAuthorize("hasRole('STUDENT')")
+    @PostMapping("/student/reset-deck")
+    public ResponseEntity<ApiResponse> resetDeck(@RequestParam Integer deckId, @AuthenticationPrincipal StudentUserDetails student) {
+        deckService.resetDeck(deckId, student.getId());
+        return ResponseEntity.ok(new ApiResponse("Deck Reset Successful"));
+    }
 }
