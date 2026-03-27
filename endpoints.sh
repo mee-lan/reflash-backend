@@ -23,6 +23,13 @@ all_courses() {
 }
 
 
+get_deck_notes() {
+  echo "Getting all notes to browser for a deck with id 1 for student"
+  curl -X GET "$BASE_URL/api/student/deck-notes?deckId=1" -u $STD:$PASS -H "role:STUDENT" | jq .
+  echo
+}
+
+
 reset_deck() {
   echo "Resetting deck with id 1 for student"
   curl -X POST "$BASE_URL/api/student/reset-deck?deckId=1" -u $STD:$PASS -H "role:STUDENT" | jq .

@@ -71,4 +71,10 @@ public class DeckController {
         deckService.resetDeck(deckId, student.getId());
         return ResponseEntity.ok(new ApiResponse("Deck Reset Successful"));
     }
+
+    @PreAuthorize("hasRole('STUDENT')")
+    @GetMapping("/student/deck-notes")
+    public ResponseEntity<ApiResponse> getNotesOfDeck(@RequestParam Integer deckId, @AuthenticationPrincipal StudentUserDetails student) {
+        return ResponseEntity.ok(new ApiResponse(deckService.getNotesOfDeckForStudent(deckId, student.getId())));
+    }
 }

@@ -163,4 +163,13 @@ public class DeckService {
 
         flashcardRepository.saveAll(flashcards);
     }
+
+    public List<NoteDto> getNotesOfDeckForStudent(Integer deckId, Integer studentId) {
+        Deck deck = deckRepository.getDeckByIdIfAccessibleByStudent(deckId, studentId)
+                .orElseThrow(() -> new RuntimeException("Deck not found or not accessible to student"));
+
+        return deck.getNotes().stream()
+                .map(NoteDto::new)
+                .toList();
+    }
 }
