@@ -18,4 +18,11 @@ public class DeckStudentDto {
         this.deckDescription = deck.getDescription();
         this.cardCount = cardCount;
     }
+
+    public DeckStudentDto(Deck deck) {
+        this.deckId = deck.getId();
+        this.deckName = deck.getName();
+        this.deckDescription = deck.getDescription();
+        this.cardCount = null;
+    }
 }

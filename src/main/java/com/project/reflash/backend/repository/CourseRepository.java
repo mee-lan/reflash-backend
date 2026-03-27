@@ -4,6 +4,7 @@ import com.project.reflash.backend.entity.Course;
 import com.project.reflash.backend.entity.Student;
 import com.project.reflash.backend.entity.Teacher;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CourseRepository extends JpaRepository<Course, Integer> {
+public interface CourseRepository extends JpaRepository<Course, Integer >, JpaSpecificationExecutor<Course> {
     @Query("SELECT c FROM Course c JOIN c.students s WHERE s.id = :studentId")
     public List<Course> getCoursesOfStudent(@Param("studentId") Integer studentId);
 

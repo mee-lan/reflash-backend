@@ -23,6 +23,13 @@ all_courses() {
 }
 
 
+global_search_student() {
+  echo "Searching for A"
+  curl -X GET "$BASE_URL/api/student/global-search?input=What+is+tangent" -u $STD:$PASS -H "role:STUDENT" | jq .
+  echo
+}
+
+
 get_questions() {
   echo "Generating questions from decks 1,2,3,4 with count 5..."
 

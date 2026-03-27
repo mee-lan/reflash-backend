@@ -3,6 +3,7 @@ package com.project.reflash.backend.repository;
 
 import com.project.reflash.backend.entity.Note;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface NoteRepository extends JpaRepository<Note, Integer> {
+public interface NoteRepository extends JpaRepository<Note, Integer>, JpaSpecificationExecutor<Note> {
 
     @Query("Select n from Note n WHERE n.deck.id = :deckId")
     public List<Note> getNotesForDeck(@Param("deckId") Integer deckId);
