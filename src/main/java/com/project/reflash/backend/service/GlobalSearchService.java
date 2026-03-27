@@ -5,21 +5,19 @@ import com.project.reflash.backend.entity.*;
 import com.project.reflash.backend.repository.CourseRepository;
 import com.project.reflash.backend.repository.DeckRepository;
 import com.project.reflash.backend.repository.NoteRepository;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class GlobalSearchService {
 
     private final NoteRepository noteRepository;
-    private CourseRepository courseRepository;
-    private DeckRepository deckRepository;
+    private final CourseRepository courseRepository;
+    private final DeckRepository deckRepository;
 
     GlobalSearchService(CourseRepository courseRepository, DeckRepository deckRepository, NoteRepository noteRepository) {
         this.courseRepository = courseRepository;
@@ -27,369 +25,114 @@ public class GlobalSearchService {
         this.noteRepository = noteRepository;
     }
 
+    private static Predicate buildNameLikePredicate(CriteriaBuilder cb, Path<String> field, String input) {
+        if (input == null || input.trim().isEmpty()) {
+            return null;
+        }
+        String pattern = "%" + input.trim().toLowerCase() + "%";
+        return cb.like(cb.lower(field), pattern);
+    }
 
-    //retrieve the course in that a student belongs to and the keyword is in the name
-    //only return the course that the contains the student as a student enrolled
+    private static Predicate buildNoteLikePredicate(CriteriaBuilder cb, Root<Note> root, String input) {
+        if (input == null || input.trim().isEmpty()) {
+            return null;
+        }
+        String pattern = "%" + input.trim().toLowerCase() + "%";
+        Predicate frontLike = cb.like(cb.lower(root.get("front")), pattern);
+        Predicate backLike = cb.like(cb.lower(root.get("back")), pattern);
+        return cb.or(frontLike, backLike);
+    }
 
-    private static <T> Specification<T> containsKeywordAndStudentForCourse(
-            String input,
-            Integer studentId
-    ) {
-        return (root, query, criteriaBuilder) -> {
+    private static Predicate combinePredicates(CriteriaBuilder cb, Predicate userPredicate, Predicate keywordPredicate) {
+        if (keywordPredicate != null) {
+            return cb.and(userPredicate, keywordPredicate);
+        }
+        return userPredicate;
+    }
 
-            List<Predicate> predicates = new ArrayList<>();
+    // --- Student Specifications ---
 
-            // 🔗 join with students
+    private static Specification<Course> courseSpecForStudent(String input, Integer studentId) {
+        return (root, query, cb) -> {
             Join<Course, Student> studentJoin = root.join("students");
-
-            // 🎯 filter: course must contain this student
-            Predicate studentPredicate = criteriaBuilder.equal(studentJoin.get("id"), studentId);
-
-            if (input != null && !input.trim().isEmpty()) {
-                String[] keywords = input.trim().split("\\s+");
-
-                List<Predicate> keywordPredicates = new ArrayList<>();
-
-                for (String keyword : keywords) {
-                    Predicate nameLike = criteriaBuilder.like(
-                            criteriaBuilder.lower(root.get("name")),
-                            "%" + keyword.toLowerCase() + "%"
-                    );
-                    keywordPredicates.add(nameLike);
-                }
-
-                // (name LIKE k1 OR name LIKE k2 ...)
-                Predicate keywordOr = criteriaBuilder.or(keywordPredicates.toArray(new Predicate[0]));
-
-                // (student matches AND keyword matches)
-                predicates.add(criteriaBuilder.and(studentPredicate, keywordOr));
-            } else {
-                // if no keyword → just filter by student
-                predicates.add(studentPredicate);
-            }
-
-            // avoid duplicates  ManyToMany join
+            Predicate studentPredicate = cb.equal(studentJoin.get("id"), studentId);
+            Predicate keywordPredicate = buildNameLikePredicate(cb, root.get("name"), input);
             query.distinct(true);
-
-            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+            return combinePredicates(cb, studentPredicate, keywordPredicate);
         };
     }
 
-    private static <T> Specification<T> containsKeywordAndStudentForDeck(
-            String input,
-            Integer studentId
-    ) {
-        return (root, query, criteriaBuilder) -> {
-
-            List<Predicate> predicates = new ArrayList<>();
-
-            // 🔗 Deck → Course
+    private static Specification<Deck> deckSpecForStudent(String input, Integer studentId) {
+        return (root, query, cb) -> {
             Join<Deck, Course> courseJoin = root.join("course");
-
-            // 🔗 Course → Students
             Join<Course, Student> studentJoin = courseJoin.join("students");
-
-            // 🎯 student condition
-            Predicate studentPredicate = criteriaBuilder.equal(
-                    studentJoin.get("id"),
-                    studentId
-            );
-
-            if (input != null && !input.trim().isEmpty()) {
-
-                String[] keywords = input.trim().split("\\s+");
-                List<Predicate> keywordPredicates = new ArrayList<>();
-
-                for (String keyword : keywords) {
-                    Predicate nameLike = criteriaBuilder.like(
-                            criteriaBuilder.lower(root.get("name")),
-                            "%" + keyword.toLowerCase() + "%"
-                    );
-                    keywordPredicates.add(nameLike);
-                }
-
-                // (name LIKE k1 OR name LIKE k2 ...)
-                Predicate keywordOr = criteriaBuilder.or(
-                        keywordPredicates.toArray(new Predicate[0])
-                );
-
-                // (student match AND keyword match)
-                predicates.add(criteriaBuilder.and(studentPredicate, keywordOr));
-
-            } else {
-                // only student condition
-                predicates.add(studentPredicate);
-            }
-
-            // 🚫 avoid duplicates joins
+            Predicate studentPredicate = cb.equal(studentJoin.get("id"), studentId);
+            Predicate keywordPredicate = buildNameLikePredicate(cb, root.get("name"), input);
             query.distinct(true);
-
-            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+            return combinePredicates(cb, studentPredicate, keywordPredicate);
         };
     }
 
-    private static Specification<Note> containsKeywordAndStudentForNote(
-            String input,
-            Integer studentId
-    ) {
-        return (root, query, criteriaBuilder) -> {
-
-            List<Predicate> predicates = new ArrayList<>();
-
-            // 🔗 Note → Deck
+    private static Specification<Note> noteSpecForStudent(String input, Integer studentId) {
+        return (root, query, cb) -> {
             Join<Note, Deck> deckJoin = root.join("deck");
-
-            // 🔗 Deck → Course
             Join<Deck, Course> courseJoin = deckJoin.join("course");
-
-            // 🔗 Course → Students
             Join<Course, Student> studentJoin = courseJoin.join("students");
-
-            // 🎯 student condition
-            Predicate studentPredicate = criteriaBuilder.equal(
-                    studentJoin.get("id"),
-                    studentId
-            );
-
-            if (input != null && !input.trim().isEmpty()) {
-
-                String[] keywords = input.trim().split("\\s+");
-                List<Predicate> keywordPredicates = new ArrayList<>();
-
-                for (String keyword : keywords) {
-
-                    String pattern = "%" + keyword.toLowerCase() + "%";
-
-                    // 🔍 match front
-                    Predicate frontLike = criteriaBuilder.like(
-                            criteriaBuilder.lower(root.get("front")),
-                            pattern
-                    );
-
-                    // 🔍 match back
-                    Predicate backLike = criteriaBuilder.like(
-                            criteriaBuilder.lower(root.get("back")),
-                            pattern
-                    );
-
-                    // (front LIKE k OR back LIKE k)
-                    Predicate frontOrBack = criteriaBuilder.or(frontLike, backLike);
-
-                    keywordPredicates.add(frontOrBack);
-                }
-
-                // (keyword1 OR keyword2 OR ...)
-                Predicate keywordOr = criteriaBuilder.or(
-                        keywordPredicates.toArray(new Predicate[0])
-                );
-
-                // (student match AND keyword match)
-                predicates.add(criteriaBuilder.and(studentPredicate, keywordOr));
-
-            } else {
-                // only student condition
-                predicates.add(studentPredicate);
-            }
-
-            // 🚫 avoid duplicates بسبب joins
+            Predicate studentPredicate = cb.equal(studentJoin.get("id"), studentId);
+            Predicate keywordPredicate = buildNoteLikePredicate(cb, root, input);
             query.distinct(true);
+            return combinePredicates(cb, studentPredicate, keywordPredicate);
+        };
+    }
 
-            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+    // --- Teacher Specifications ---
+
+    private static Specification<Course> courseSpecForTeacher(String input, Integer teacherId) {
+        return (root, query, cb) -> {
+            Join<Course, Teacher> teacherJoin = root.join("teachers");
+            Predicate teacherPredicate = cb.equal(teacherJoin.get("id"), teacherId);
+            Predicate keywordPredicate = buildNameLikePredicate(cb, root.get("name"), input);
+            query.distinct(true);
+            return combinePredicates(cb, teacherPredicate, keywordPredicate);
+        };
+    }
+
+    private static Specification<Deck> deckSpecForTeacher(String input, Integer teacherId) {
+        return (root, query, cb) -> {
+            Join<Deck, Course> courseJoin = root.join("course");
+            Join<Course, Teacher> teacherJoin = courseJoin.join("teachers");
+            Predicate teacherPredicate = cb.equal(teacherJoin.get("id"), teacherId);
+            Predicate keywordPredicate = buildNameLikePredicate(cb, root.get("name"), input);
+            query.distinct(true);
+            return combinePredicates(cb, teacherPredicate, keywordPredicate);
+        };
+    }
+
+    private static Specification<Note> noteSpecForTeacher(String input, Integer teacherId) {
+        return (root, query, cb) -> {
+            Join<Note, Deck> deckJoin = root.join("deck");
+            Join<Deck, Course> courseJoin = deckJoin.join("course");
+            Join<Course, Teacher> teacherJoin = courseJoin.join("teachers");
+            Predicate teacherPredicate = cb.equal(teacherJoin.get("id"), teacherId);
+            Predicate keywordPredicate = buildNoteLikePredicate(cb, root, input);
+            query.distinct(true);
+            return combinePredicates(cb, teacherPredicate, keywordPredicate);
         };
     }
 
     @PreAuthorize("hasRole('STUDENT')")
     public GlobalSearchResultDto globalSearchStudent(String input, Integer studentId) {
-        List<Course> courses = courseRepository.findAll(containsKeywordAndStudentForCourse(input, studentId));
-
-        List<Deck> decks = deckRepository.findAll(containsKeywordAndStudentForDeck(input, studentId));
-
-        List<Note> notes = noteRepository.findAll(containsKeywordAndStudentForNote(input, studentId));
-
-        GlobalSearchResultDto searchResult = new GlobalSearchResultDto(courses, decks, notes);
-
-        return searchResult;
-    }
-
-
-
-    private static <T> Specification<T> containsKeywordInCourseNameForTeacher(
-            String input,
-            Integer teacherId
-    ) {
-        return (root, query, criteriaBuilder) -> {
-
-            List<Predicate> predicates = new ArrayList<>();
-
-            // 🔗 join with teachers
-            Join<Course, Teacher> teacherJoin = root.join("teachers");
-
-            // 🎯 filter: course must contain this teacher
-            Predicate teacherPredicate = criteriaBuilder.equal(teacherJoin.get("id"), teacherId);
-
-            if (input != null && !input.trim().isEmpty()) {
-                String[] keywords = input.trim().split("\\s+");
-
-                List<Predicate> keywordPredicates = new ArrayList<>();
-
-                for (String keyword : keywords) {
-                    Predicate nameLike = criteriaBuilder.like(
-                            criteriaBuilder.lower(root.get("name")),
-                            "%" + keyword.toLowerCase() + "%"
-                    );
-                    keywordPredicates.add(nameLike);
-                }
-
-                // (name LIKE k1 OR name LIKE k2 ...)
-                Predicate keywordOr = criteriaBuilder.or(keywordPredicates.toArray(new Predicate[0]));
-
-                // (teacher matches AND keyword matches)
-                predicates.add(criteriaBuilder.and(teacherPredicate, keywordOr));
-            } else {
-                // if no keyword → just filter by teacher
-                predicates.add(teacherPredicate);
-            }
-
-            // avoid duplicates  ManyToMany join
-            query.distinct(true);
-
-            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-        };
-    }
-
-    private static <T> Specification<T> containsKeywordInDeckNameForTeacher(
-            String input,
-            Integer teacherId
-    ) {
-        return (root, query, criteriaBuilder) -> {
-
-            List<Predicate> predicates = new ArrayList<>();
-
-            // 🔗 Deck → Course
-            Join<Deck, Course> courseJoin = root.join("course");
-
-            // 🔗 Course → teachers
-            Join<Course, Teacher> teacherJoin = courseJoin.join("teachers");
-
-            // 🎯 teacher condition
-            Predicate teacherPredicate = criteriaBuilder.equal(
-                    teacherJoin.get("id"),
-                    teacherId
-            );
-
-            if (input != null && !input.trim().isEmpty()) {
-
-                String[] keywords = input.trim().split("\\s+");
-                List<Predicate> keywordPredicates = new ArrayList<>();
-
-                for (String keyword : keywords) {
-                    Predicate nameLike = criteriaBuilder.like(
-                            criteriaBuilder.lower(root.get("name")),
-                            "%" + keyword.toLowerCase() + "%"
-                    );
-                    keywordPredicates.add(nameLike);
-                }
-
-                // (name LIKE k1 OR name LIKE k2 ...)
-                Predicate keywordOr = criteriaBuilder.or(
-                        keywordPredicates.toArray(new Predicate[0])
-                );
-
-                // (teacher match AND keyword match)
-                predicates.add(criteriaBuilder.and(teacherPredicate, keywordOr));
-
-            } else {
-                // only teacher condition
-                predicates.add(teacherPredicate);
-            }
-
-            // 🚫 avoid duplicates joins
-            query.distinct(true);
-
-            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-        };
-    }
-
-    private static Specification<Note> containsKeywordInNoteForTeacher(
-            String input,
-            Integer teacherId
-    ) {
-        return (root, query, criteriaBuilder) -> {
-
-            List<Predicate> predicates = new ArrayList<>();
-
-            // 🔗 Note → Deck
-            Join<Note, Deck> deckJoin = root.join("deck");
-
-            // 🔗 Deck → Course
-            Join<Deck, Course> courseJoin = deckJoin.join("course");
-
-            // 🔗 Course → teachers
-            Join<Course, Teacher> teacherJoin = courseJoin.join("teachers");
-
-            // 🎯 teacher condition
-            Predicate teacherPredicate = criteriaBuilder.equal(
-                    teacherJoin.get("id"),
-                    teacherId
-            );
-
-            if (input != null && !input.trim().isEmpty()) {
-
-                String[] keywords = input.trim().split("\\s+");
-                List<Predicate> keywordPredicates = new ArrayList<>();
-
-                for (String keyword : keywords) {
-
-                    String pattern = "%" + keyword.toLowerCase() + "%";
-
-                    // 🔍 match front
-                    Predicate frontLike = criteriaBuilder.like(
-                            criteriaBuilder.lower(root.get("front")),
-                            pattern
-                    );
-
-                    // 🔍 match back
-                    Predicate backLike = criteriaBuilder.like(
-                            criteriaBuilder.lower(root.get("back")),
-                            pattern
-                    );
-
-                    // (front LIKE k OR back LIKE k)
-                    Predicate frontOrBack = criteriaBuilder.or(frontLike, backLike);
-
-                    keywordPredicates.add(frontOrBack);
-                }
-
-                // (keyword1 OR keyword2 OR ...)
-                Predicate keywordOr = criteriaBuilder.or(
-                        keywordPredicates.toArray(new Predicate[0])
-                );
-
-                // (Teacher match AND keyword match)
-                predicates.add(criteriaBuilder.and(teacherPredicate, keywordOr));
-
-            } else {
-                // only teacher condition
-                predicates.add(teacherPredicate);
-            }
-
-            // 🚫 avoid duplicates بسبب joins
-            query.distinct(true);
-
-            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-        };
+        List<Course> courses = courseRepository.findAll(courseSpecForStudent(input, studentId));
+        List<Deck> decks = deckRepository.findAll(deckSpecForStudent(input, studentId));
+        List<Note> notes = noteRepository.findAll(noteSpecForStudent(input, studentId));
+        return new GlobalSearchResultDto(courses, decks, notes);
     }
 
     @PreAuthorize("hasRole('TEACHER')")
     public GlobalSearchResultDto globalSearchTeacher(String input, Integer teacherId) {
-        List<Course> courses = courseRepository.findAll(containsKeywordInCourseNameForTeacher(input, teacherId));
-
-        List<Deck> decks = deckRepository.findAll(containsKeywordInDeckNameForTeacher(input, teacherId));
-
-        List<Note> notes = noteRepository.findAll(containsKeywordInNoteForTeacher(input, teacherId));
-
-        GlobalSearchResultDto searchResult = new GlobalSearchResultDto(courses, decks, notes);
-
-        return searchResult;
+        List<Course> courses = courseRepository.findAll(courseSpecForTeacher(input, teacherId));
+        List<Deck> decks = deckRepository.findAll(deckSpecForTeacher(input, teacherId));
+        List<Note> notes = noteRepository.findAll(noteSpecForTeacher(input, teacherId));
+        return new GlobalSearchResultDto(courses, decks, notes);
     }
 }

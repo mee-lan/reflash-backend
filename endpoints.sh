@@ -25,14 +25,14 @@ all_courses() {
 
 global_search_student() {
   echo "Searching for A"
-  curl -X GET "$BASE_URL/api/student/global-search?input=tangent" -u $STD:$PASS -H "role:STUDENT" | jq .
+  curl -X GET "$BASE_URL/api/student/global-search?input=what+is+a+tangent" -u $STD:$PASS -H "role:STUDENT" | jq .
   echo
 }
 
 
 global_search_teacher() {
   echo "Searching for what+is+tangent"
-  curl -X GET "$BASE_URL/api/teacher/global-search?input=tangent" -u $TCHR:$PASS -H "role:TEACHER" | jq .
+  curl -X GET "$BASE_URL/api/teacher/global-search?input=what+is+a+tangent" -u $TCHR:$PASS -H "role:TEACHER" | jq .
   echo
 }
 
