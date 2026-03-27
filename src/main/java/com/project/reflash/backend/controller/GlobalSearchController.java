@@ -2,6 +2,7 @@ package com.project.reflash.backend.controller;
 
 import com.project.reflash.backend.auth.user_details.StudentUserDetails;
 import com.project.reflash.backend.auth.user_details.TeacherUserDetails;
+import com.project.reflash.backend.dto.GlobalSearchResultAdminDto;
 import com.project.reflash.backend.dto.GlobalSearchResultDto;
 import com.project.reflash.backend.response.ApiResponse;
 import com.project.reflash.backend.service.GlobalSearchService;
@@ -36,5 +37,12 @@ public class GlobalSearchController {
     public ResponseEntity<ApiResponse> globalSearchTeacher(@RequestParam String input, @AuthenticationPrincipal TeacherUserDetails teacher) {
         GlobalSearchResultDto globalSearchResultDto = globalSearchService.globalSearchTeacher(input, teacher.getId());
         return ResponseEntity.ok().body(new ApiResponse(globalSearchResultDto));
+    }
+
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @GetMapping("/admin/global-search")
+    public ResponseEntity<ApiResponse> globalSearchAdmin(@RequestParam String input) {
+        GlobalSearchResultAdminDto adminGlobalSearchResultDto = globalSearchService.globalSearchAdmin(input);
+        return ResponseEntity.ok().body(new ApiResponse(adminGlobalSearchResultDto));
     }
 }

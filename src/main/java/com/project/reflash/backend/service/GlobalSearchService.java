@@ -1,10 +1,13 @@
 package com.project.reflash.backend.service;
 
+import com.project.reflash.backend.dto.GlobalSearchResultAdminDto;
 import com.project.reflash.backend.dto.GlobalSearchResultDto;
 import com.project.reflash.backend.entity.*;
 import com.project.reflash.backend.repository.CourseRepository;
 import com.project.reflash.backend.repository.DeckRepository;
 import com.project.reflash.backend.repository.NoteRepository;
+import com.project.reflash.backend.repository.StudentRepository;
+import com.project.reflash.backend.repository.TeacherRepository;
 import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,11 +21,21 @@ public class GlobalSearchService {
     private final NoteRepository noteRepository;
     private final CourseRepository courseRepository;
     private final DeckRepository deckRepository;
+    private final TeacherRepository teacherRepository;
+    private final StudentRepository studentRepository;
 
-    GlobalSearchService(CourseRepository courseRepository, DeckRepository deckRepository, NoteRepository noteRepository) {
+    GlobalSearchService(
+            CourseRepository courseRepository,
+            DeckRepository deckRepository,
+            NoteRepository noteRepository,
+            TeacherRepository teacherRepository,
+            StudentRepository studentRepository
+    ) {
         this.courseRepository = courseRepository;
         this.deckRepository = deckRepository;
         this.noteRepository = noteRepository;
+        this.teacherRepository = teacherRepository;
+        this.studentRepository = studentRepository;
     }
 
     private static Predicate buildNameLikePredicate(CriteriaBuilder cb, Path<String> field, String input) {
@@ -134,5 +147,70 @@ public class GlobalSearchService {
         List<Deck> decks = deckRepository.findAll(deckSpecForTeacher(input, teacherId));
         List<Note> notes = noteRepository.findAll(noteSpecForTeacher(input, teacherId));
         return new GlobalSearchResultDto(courses, decks, notes);
+    }
+
+    // --- Admin Specifications ---
+
+    private static Specification<Course> courseSpecForAdmin(String input) {
+        return (root, query, cb) -> {
+            Predicate keywordPredicate = buildNameLikePredicate(cb, root.get("name"), input);
+            if (keywordPredicate == null) {
+                return cb.conjunction();
+            }
+            return keywordPredicate;
+        };
+    }
+
+    private static Predicate buildTeacherLikePredicate(CriteriaBuilder cb, Root<Teacher> root, String input) {
+        if (input == null || input.trim().isEmpty()) {
+            return null;
+        }
+        String pattern = "%" + input.trim().toLowerCase() + "%";
+        Predicate firstNameLike = cb.like(cb.lower(root.get("firstName")), pattern);
+        Predicate lastNameLike = cb.like(cb.lower(root.get("lastName")), pattern);
+        Predicate usernameLike = cb.like(cb.lower(root.get("username")), pattern);
+        Predicate emailLike = cb.like(cb.lower(root.get("email")), pattern);
+        return cb.or(firstNameLike, lastNameLike, usernameLike, emailLike);
+    }
+
+    private static Specification<Teacher> teacherSpecForAdmin(String input) {
+        return (root, query, cb) -> {
+            Predicate keywordPredicate = buildTeacherLikePredicate(cb, root, input);
+            if (keywordPredicate == null) {
+                return cb.conjunction();
+            }
+            return keywordPredicate;
+        };
+    }
+
+    private static Predicate buildStudentLikePredicate(CriteriaBuilder cb, Root<Student> root, String input) {
+        if (input == null || input.trim().isEmpty()) {
+            return null;
+        }
+        String pattern = "%" + input.trim().toLowerCase() + "%";
+        Predicate firstNameLike = cb.like(cb.lower(root.get("firstName")), pattern);
+        Predicate lastNameLike = cb.like(cb.lower(root.get("lastName")), pattern);
+        Predicate rollLike = cb.like(cb.lower(root.get("roll")), pattern);
+        Predicate gradeLike = cb.like(cb.lower(root.get("grade")), pattern);
+        Predicate sectionLike = cb.like(cb.lower(root.get("section")), pattern);
+        return cb.or(firstNameLike, lastNameLike, rollLike, gradeLike, sectionLike);
+    }
+
+    private static Specification<Student> studentSpecForAdmin(String input) {
+        return (root, query, cb) -> {
+            Predicate keywordPredicate = buildStudentLikePredicate(cb, root, input);
+            if (keywordPredicate == null) {
+                return cb.conjunction();
+            }
+            return keywordPredicate;
+        };
+    }
+
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    public GlobalSearchResultAdminDto globalSearchAdmin(String input) {
+        List<Course> courses = courseRepository.findAll(courseSpecForAdmin(input));
+        List<Teacher> teachers = teacherRepository.findAll(teacherSpecForAdmin(input));
+        List<Student> students = studentRepository.findAll(studentSpecForAdmin(input));
+        return new GlobalSearchResultAdminDto(courses, teachers, students);
     }
 }
